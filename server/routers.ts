@@ -35,7 +35,7 @@ import {
 } from "../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { notifyOwner } from "./_core/notification";
-import { storagePut } from "./storage";
+import { storagePutImage } from "./storage";
 import { nanoid } from "nanoid";
 
 export const appRouter = router({
@@ -627,7 +627,7 @@ export const appRouter = router({
         const fileKey = `properties/${input.propertyId}/images/${nanoid()}-${input.fileName}`;
 
         // Upload to S3
-        const { url } = await storagePut(fileKey, buffer, "image/jpeg");
+        const { url } = await storagePutImage(fileKey, buffer, "image/jpeg");
 
         // Get max display order
         const images = await getPropertyImages(input.propertyId);
