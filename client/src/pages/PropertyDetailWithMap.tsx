@@ -1,7 +1,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MapPin, Bed, Bath, Ruler, Heart, Share2, Phone, Mail, Navigation } from "lucide-react";
+import {
+  MapPin,
+  Bed,
+  Bath,
+  Ruler,
+  Heart,
+  Share2,
+  Phone,
+  Mail,
+  Navigation,
+} from "lucide-react";
 import { useRoute } from "wouter";
 import Header from "@/components/Header";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -12,7 +22,6 @@ export default function PropertyDetailWithMap() {
   const { isAuthenticated } = useAuth();
   const [isFavorited, setIsFavorited] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [mapReady, setMapReady] = useState(false);
 
   // Mock property data - in real app would fetch from API
   const property = {
@@ -29,8 +38,18 @@ export default function PropertyDetailWithMap() {
     zipCode: "94102",
     latitude: 37.7749,
     longitude: -122.4194,
-    description: "Stunning modern home with panoramic city views, premium finishes, and smart home technology. Perfect for discerning buyers seeking luxury and convenience.",
-    amenities: ["Swimming Pool", "Home Theater", "Smart Home", "Hardwood Floors", "Granite Counters", "Stainless Steel Appliances", "Walk-in Closets", "Spa Bathroom"],
+    description:
+      "Stunning modern home with panoramic city views, premium finishes, and smart home technology. Perfect for discerning buyers seeking luxury and convenience.",
+    amenities: [
+      "Swimming Pool",
+      "Home Theater",
+      "Smart Home",
+      "Hardwood Floors",
+      "Granite Counters",
+      "Stainless Steel Appliances",
+      "Walk-in Closets",
+      "Spa Bathroom",
+    ],
     images: [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
@@ -67,7 +86,7 @@ export default function PropertyDetailWithMap() {
 
             {/* Thumbnails */}
             <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-x-visible">
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3].map(i => (
                 <div
                   key={i}
                   className="w-24 h-24 lg:w-full lg:h-24 flex-shrink-0 bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg cursor-pointer hover:ring-2 hover:ring-accent transition-all"
@@ -88,10 +107,13 @@ export default function PropertyDetailWithMap() {
               <div>
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h1 className="text-4xl font-bold mb-2">{property.title}</h1>
+                    <h1 className="text-4xl font-bold mb-2">
+                      {property.title}
+                    </h1>
                     <p className="text-lg text-muted-foreground flex items-center gap-2">
                       <MapPin className="w-5 h-5" />
-                      {property.address}, {property.city}, {property.state} {property.zipCode}
+                      {property.address}, {property.city}, {property.state}{" "}
+                      {property.zipCode}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -101,7 +123,9 @@ export default function PropertyDetailWithMap() {
                       onClick={() => setIsFavorited(!isFavorited)}
                       className={isFavorited ? "text-accent" : ""}
                     >
-                      <Heart className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`} />
+                      <Heart
+                        className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`}
+                      />
                     </Button>
                     <Button variant="outline" size="icon">
                       <Share2 className="w-5 h-5" />
@@ -117,27 +141,35 @@ export default function PropertyDetailWithMap() {
                   <Card className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Bed className="w-5 h-5 text-accent" />
-                      <span className="text-2xl font-bold">{property.bedrooms}</span>
+                      <span className="text-2xl font-bold">
+                        {property.bedrooms}
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground">Bedrooms</p>
                   </Card>
                   <Card className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Bath className="w-5 h-5 text-accent" />
-                      <span className="text-2xl font-bold">{property.bathrooms}</span>
+                      <span className="text-2xl font-bold">
+                        {property.bathrooms}
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground">Bathrooms</p>
                   </Card>
                   <Card className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Ruler className="w-5 h-5 text-accent" />
-                      <span className="text-2xl font-bold">{(property.squareFeet / 1000).toFixed(1)}k</span>
+                      <span className="text-2xl font-bold">
+                        {(property.squareFeet / 1000).toFixed(1)}k
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground">Sqft</p>
                   </Card>
                   <Card className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <span className="text-2xl font-bold capitalize">{property.status}</span>
+                      <span className="text-2xl font-bold capitalize">
+                        {property.status}
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground">Status</p>
                   </Card>
@@ -147,7 +179,9 @@ export default function PropertyDetailWithMap() {
               {/* Description */}
               <div>
                 <h2 className="text-2xl font-bold mb-4">About This Property</h2>
-                <p className="text-muted-foreground leading-relaxed mb-6">{property.description}</p>
+                <p className="text-muted-foreground leading-relaxed mb-6">
+                  {property.description}
+                </p>
               </div>
 
               {/* Amenities */}
@@ -155,7 +189,10 @@ export default function PropertyDetailWithMap() {
                 <h2 className="text-2xl font-bold mb-4">Amenities</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {property.amenities.map((amenity, i) => (
-                    <div key={i} className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border">
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border"
+                    >
                       <div className="w-2 h-2 rounded-full bg-accent" />
                       <span className="text-sm">{amenity}</span>
                     </div>
@@ -168,16 +205,17 @@ export default function PropertyDetailWithMap() {
                 <h2 className="text-2xl font-bold mb-4">Location Map</h2>
                 <div className="w-full h-96 rounded-lg overflow-hidden border border-border">
                   <MapView
-                    initialCenter={{ lat: property.latitude, lng: property.longitude }}
+                    initialCenter={{
+                      lat: property.latitude,
+                      lng: property.longitude,
+                    }}
                     initialZoom={15}
-                    onMapReady={(map: any) => {
-                      setMapReady(true);
-                      // Add marker for property location
-                      const marker = new (window as any).google.maps.marker.AdvancedMarkerElement({
-                        map,
-                        position: { lat: property.latitude, lng: property.longitude },
-                        title: property.title,
-                      });
+                    marker={{
+                      position: {
+                        lat: property.latitude,
+                        lng: property.longitude,
+                      },
+                      title: property.title,
                     }}
                   />
                 </div>
@@ -196,18 +234,38 @@ export default function PropertyDetailWithMap() {
                 <h2 className="text-2xl font-bold mb-4">Nearby Amenities</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
-                    { name: "Whole Foods Market", distance: "0.3 mi", type: "Grocery" },
-                    { name: "Golden Gate Park", distance: "1.2 mi", type: "Park" },
-                    { name: "SF General Hospital", distance: "0.8 mi", type: "Hospital" },
-                    { name: "Lincoln High School", distance: "0.5 mi", type: "School" },
+                    {
+                      name: "Whole Foods Market",
+                      distance: "0.3 mi",
+                      type: "Grocery",
+                    },
+                    {
+                      name: "Golden Gate Park",
+                      distance: "1.2 mi",
+                      type: "Park",
+                    },
+                    {
+                      name: "SF General Hospital",
+                      distance: "0.8 mi",
+                      type: "Hospital",
+                    },
+                    {
+                      name: "Lincoln High School",
+                      distance: "0.5 mi",
+                      type: "School",
+                    },
                   ].map((amenity, i) => (
                     <Card key={i} className="p-4">
                       <div className="flex items-start justify-between">
                         <div>
                           <h4 className="font-semibold">{amenity.name}</h4>
-                          <p className="text-sm text-muted-foreground">{amenity.type}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {amenity.type}
+                          </p>
                         </div>
-                        <span className="text-sm font-medium text-accent">{amenity.distance}</span>
+                        <span className="text-sm font-medium text-accent">
+                          {amenity.distance}
+                        </span>
                       </div>
                     </Card>
                   ))}
@@ -219,7 +277,9 @@ export default function PropertyDetailWithMap() {
             <div className="space-y-6">
               {/* Contact Card */}
               <Card className="p-6 space-y-4 sticky top-20">
-                <h3 className="text-xl font-bold">Interested in This Property?</h3>
+                <h3 className="text-xl font-bold">
+                  Interested in This Property?
+                </h3>
 
                 {isAuthenticated ? (
                   <>
@@ -234,7 +294,9 @@ export default function PropertyDetailWithMap() {
                   </>
                 ) : (
                   <div className="text-center space-y-3">
-                    <p className="text-sm text-muted-foreground">Sign in to contact the agent</p>
+                    <p className="text-sm text-muted-foreground">
+                      Sign in to contact the agent
+                    </p>
                     <Button className="w-full bg-accent hover:bg-accent/90 h-12">
                       Sign In
                     </Button>
@@ -245,7 +307,9 @@ export default function PropertyDetailWithMap() {
                   <h4 className="font-semibold mb-3">Agent Information</h4>
                   <div className="space-y-2 text-sm">
                     <p className="text-muted-foreground">
-                      <span className="font-medium text-foreground">John Smith</span>
+                      <span className="font-medium text-foreground">
+                        John Smith
+                      </span>
                       <br />
                       Real Estate Agent
                     </p>
@@ -267,7 +331,9 @@ export default function PropertyDetailWithMap() {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Property Type</span>
-                    <span className="font-medium capitalize">{property.propertyType}</span>
+                    <span className="font-medium capitalize">
+                      {property.propertyType}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Year Built</span>

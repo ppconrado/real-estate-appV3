@@ -31,6 +31,7 @@ export default function AdminDashboard() {
   const [editingPropertyId, setEditingPropertyId] = useState<number | null>(
     null
   );
+  const [isGeocoding, setIsGeocoding] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -227,6 +228,63 @@ export default function AdminDashboard() {
     }
 
     createPropertyMutation.mutate(payload);
+  };
+
+  const geocodeAddress = async () => {
+    const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN as
+      | string
+      | undefined;
+    if (!token) {
+      toast.error("Missing VITE_MAPBOX_ACCESS_TOKEN in .env");
+      return;
+    }
+
+    const addressParts = [
+      formData.address,
+      formData.city,
+      formData.state,
+      formData.zipCode,
+      "Brazil",
+    ]
+      .map(part => part.trim())
+      .filter(Boolean);
+
+    if (addressParts.length < 2) {
+      toast.error("Enter at least address and city before geocoding");
+      return;
+    }
+
+    const query = encodeURIComponent(addressParts.join(", "));
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${token}&limit=1&language=pt&country=br`;
+
+    try {
+      setIsGeocoding(true);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Mapbox geocoding failed (${response.status})`);
+      }
+
+      const data = await response.json();
+      const feature = data?.features?.[0];
+      if (!feature || !Array.isArray(feature.center)) {
+        toast.error("No geocoding results found");
+        return;
+      }
+
+      const [lng, lat] = feature.center;
+      setFormData(prev => ({
+        ...prev,
+        latitude: Number(lat).toFixed(6),
+        longitude: Number(lng).toFixed(6),
+      }));
+      toast.success("Latitude/longitude updated from address");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to geocode address"
+      );
+    } finally {
+      setIsGeocoding(false);
+    }
   };
 
   // Check if user is admin
@@ -538,6 +596,20 @@ export default function AdminDashboard() {
                       className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                     />
                   </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={geocodeAddress}
+                    disabled={isGeocoding}
+                  >
+                    {isGeocoding ? "Geocoding..." : "Auto-fill from address"}
+                  </Button>
+                  <p className="text-sm text-muted-foreground">
+                    Uses Mapbox to find coordinates from the address fields.
+                  </p>
                 </div>
 
                 <div>

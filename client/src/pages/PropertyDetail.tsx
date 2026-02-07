@@ -258,14 +258,9 @@ export default function PropertyDetail() {
                       <MapView
                         initialCenter={propertyCoordinates}
                         initialZoom={15}
-                        onMapReady={(map: any) => {
-                          new (
-                            window as any
-                          ).google.maps.marker.AdvancedMarkerElement({
-                            map,
-                            position: propertyCoordinates,
-                            title: property.title,
-                          });
+                        marker={{
+                          position: propertyCoordinates,
+                          title: property.title,
                         }}
                       />
                     </div>
