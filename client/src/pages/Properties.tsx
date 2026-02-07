@@ -12,6 +12,46 @@ import { type AmenityId } from "@shared/amenities";
 import SavedSearches from "@/components/SavedSearches";
 import { Slider } from "@/components/ui/slider";
 
+function PropertyCardImage({
+  propertyId,
+  title,
+}: {
+  propertyId: number | string;
+  title: string;
+}) {
+  const resolvedPropertyId = Number(propertyId);
+
+  const { data: images = [] } = trpc.images.getPropertyImages.useQuery(
+    { propertyId: resolvedPropertyId },
+    { enabled: Number.isFinite(resolvedPropertyId) && resolvedPropertyId > 0 }
+  );
+
+  const imageUrl = images[0]?.imageUrl;
+
+  if (!imageUrl) {
+    return (
+      <div className="w-full h-48 bg-linear-to-br from-accent/20 to-accent/5 flex items-center justify-center group-hover:from-accent/30 group-hover:to-accent/10 transition-colors">
+        <div className="text-center">
+          <MapPin className="w-8 h-8 text-accent/50 mx-auto mb-2" />
+          <p className="text-sm text-muted-foreground">Property Image</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-48 bg-muted overflow-hidden">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  );
+}
+
 export default function Properties() {
   const { isAuthenticated } = useAuth();
   const { data: allProperties, isLoading } = trpc.properties.getAll.useQuery();
@@ -449,14 +489,10 @@ export default function Properties() {
                 <Link key={property.id} href={`/property/${property.id}`}>
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col group">
                     {/* Property Image Placeholder */}
-                    <div className="w-full h-48 bg-linear-to-br from-accent/20 to-accent/5 flex items-center justify-center group-hover:from-accent/30 group-hover:to-accent/10 transition-colors">
-                      <div className="text-center">
-                        <MapPin className="w-8 h-8 text-accent/50 mx-auto mb-2" />
-                        <p className="text-sm text-muted-foreground">
-                          Property Image
-                        </p>
-                      </div>
-                    </div>
+                    <PropertyCardImage
+                      propertyId={property.id}
+                      title={property.title}
+                    />
 
                     {/* Property Info */}
                     <div className="p-6 flex-1 flex flex-col">

@@ -5,8 +5,48 @@ import { MapPin, Search, TrendingUp, Award } from "lucide-react";
 import { Link } from "wouter";
 import Header from "@/components/Header";
 
+function FeaturedPropertyImage({
+  propertyId,
+  title,
+}: {
+  propertyId: number | string;
+  title: string;
+}) {
+  const resolvedPropertyId = Number(propertyId);
+  const { data: images = [] } = trpc.images.getPropertyImages.useQuery(
+    { propertyId: resolvedPropertyId },
+    { enabled: Number.isFinite(resolvedPropertyId) && resolvedPropertyId > 0 }
+  );
+
+  const imageUrl = images[0]?.imageUrl;
+
+  if (!imageUrl) {
+    return (
+      <div className="w-full h-48 bg-linear-to-br from-accent/20 to-accent/5 flex items-center justify-center">
+        <div className="text-center">
+          <MapPin className="w-8 h-8 text-accent/50 mx-auto mb-2" />
+          <p className="text-sm text-muted-foreground">Property Image</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-48 bg-muted overflow-hidden">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  );
+}
+
 export default function Home() {
-  const { data: featuredProperties, isLoading } = trpc.properties.getFeatured.useQuery();
+  const { data: featuredProperties, isLoading } =
+    trpc.properties.getFeatured.useQuery();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -26,7 +66,8 @@ export default function Home() {
               Find Your <span className="text-accent">Perfect Home</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Discover exceptional properties in prime locations. Browse our curated collection of residential and commercial real estate.
+              Discover exceptional properties in prime locations. Browse our
+              curated collection of residential and commercial real estate.
             </p>
 
             {/* Search Bar */}
@@ -46,7 +87,11 @@ export default function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button size="lg" asChild className="bg-accent hover:bg-accent/90">
+              <Button
+                size="lg"
+                asChild
+                className="bg-accent hover:bg-accent/90"
+              >
                 <Link href="/properties">Browse All Properties</Link>
               </Button>
               <Button size="lg" variant="outline">
@@ -66,7 +111,9 @@ export default function Home() {
                 <MapPin className="w-6 h-6 text-accent" />
               </div>
               <h3 className="text-lg font-semibold">Prime Locations</h3>
-              <p className="text-muted-foreground">Properties in the most desirable neighborhoods and areas</p>
+              <p className="text-muted-foreground">
+                Properties in the most desirable neighborhoods and areas
+              </p>
             </div>
 
             <div className="text-center space-y-3">
@@ -74,7 +121,9 @@ export default function Home() {
                 <TrendingUp className="w-6 h-6 text-accent" />
               </div>
               <h3 className="text-lg font-semibold">Best Value</h3>
-              <p className="text-muted-foreground">Competitive pricing with transparent market analysis</p>
+              <p className="text-muted-foreground">
+                Competitive pricing with transparent market analysis
+              </p>
             </div>
 
             <div className="text-center space-y-3">
@@ -82,7 +131,9 @@ export default function Home() {
                 <Award className="w-6 h-6 text-accent" />
               </div>
               <h3 className="text-lg font-semibold">Expert Support</h3>
-              <p className="text-muted-foreground">Professional guidance throughout your property journey</p>
+              <p className="text-muted-foreground">
+                Professional guidance throughout your property journey
+              </p>
             </div>
           </div>
         </div>
@@ -101,8 +152,11 @@ export default function Home() {
 
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-80 bg-muted rounded-lg animate-pulse" />
+                {[1, 2, 3].map(i => (
+                  <div
+                    key={i}
+                    className="h-80 bg-muted rounded-lg animate-pulse"
+                  />
                 ))}
               </div>
             ) : (
@@ -111,16 +165,16 @@ export default function Home() {
                   <Link key={property.id} href={`/property/${property.id}`}>
                     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                       {/* Property Image Placeholder */}
-                      <div className="w-full h-48 bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
-                        <div className="text-center">
-                          <MapPin className="w-8 h-8 text-accent/50 mx-auto mb-2" />
-                          <p className="text-sm text-muted-foreground">Property Image</p>
-                        </div>
-                      </div>
+                      <FeaturedPropertyImage
+                        propertyId={property.id}
+                        title={property.title}
+                      />
 
                       {/* Property Info */}
                       <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{property.title}</h3>
+                        <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+                          {property.title}
+                        </h3>
                         <p className="text-sm text-muted-foreground mb-4 flex items-center gap-1">
                           <MapPin className="w-4 h-4" />
                           {property.city}, {property.state}
@@ -128,16 +182,26 @@ export default function Home() {
 
                         <div className="grid grid-cols-3 gap-3 mb-4 py-4 border-t border-b border-border">
                           <div className="text-center">
-                            <p className="text-sm text-muted-foreground">Beds</p>
+                            <p className="text-sm text-muted-foreground">
+                              Beds
+                            </p>
                             <p className="font-semibold">{property.bedrooms}</p>
                           </div>
                           <div className="text-center">
-                            <p className="text-sm text-muted-foreground">Baths</p>
-                            <p className="font-semibold">{property.bathrooms}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Baths
+                            </p>
+                            <p className="font-semibold">
+                              {property.bathrooms}
+                            </p>
                           </div>
                           <div className="text-center">
-                            <p className="text-sm text-muted-foreground">Sqft</p>
-                            <p className="font-semibold">{property.squareFeet?.toLocaleString()}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Sqft
+                            </p>
+                            <p className="font-semibold">
+                              {property.squareFeet?.toLocaleString()}
+                            </p>
                           </div>
                         </div>
 
@@ -169,12 +233,19 @@ export default function Home() {
       <section className="py-16 md:py-24 border-t border-border">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center space-y-6 bg-card rounded-lg p-8 md:p-12 border border-border">
-            <h2 className="text-3xl md:text-4xl font-bold">Ready to Find Your Dream Property?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Ready to Find Your Dream Property?
+            </h2>
             <p className="text-muted-foreground text-lg">
-              Start your real estate journey today with our comprehensive property listings and expert guidance.
+              Start your real estate journey today with our comprehensive
+              property listings and expert guidance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-accent hover:bg-accent/90" asChild>
+              <Button
+                size="lg"
+                className="bg-accent hover:bg-accent/90"
+                asChild
+              >
                 <Link href="/properties">Browse Properties</Link>
               </Button>
               <Button size="lg" variant="outline">
@@ -192,33 +263,117 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">About</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Careers
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Properties</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">For Sale</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">For Rent</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">New Listings</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    For Sale
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    For Rent
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    New Listings
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">FAQ</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Contact
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    FAQ
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Cookies</a></li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Privacy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Terms
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Cookies
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
