@@ -7,16 +7,30 @@ import { SignJWT, jwtVerify } from "jose";
 import type { User } from "../../drizzle/schema";
 import * as db from "../db";
 import { ENV } from "./env";
-import type {
-  ExchangeTokenRequest,
-  ExchangeTokenResponse,
-  GetUserInfoResponse,
-  GetUserInfoWithJwtRequest,
-  GetUserInfoWithJwtResponse,
-} from "./types/manusTypes";
 // Utility function
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0;
+
+type ExchangeTokenResponse = {
+  accessToken: string;
+  tokenType: string;
+  expiresIn: number;
+  refreshToken?: string;
+  scope?: string;
+  idToken?: string;
+};
+
+type UserInfoResponse = {
+  openId: string;
+  projectId: string;
+  name: string;
+  email?: string | null;
+  platform?: string | null;
+  loginMethod?: string | null;
+};
+
+type GetUserInfoResponse = UserInfoResponse;
+type GetUserInfoWithJwtResponse = UserInfoResponse;
 
 export type SessionPayload = {
   openId: string;
@@ -24,57 +38,8 @@ export type SessionPayload = {
   name: string;
 };
 
-const EXCHANGE_TOKEN_PATH = `/webdev.v1.WebDevAuthPublicService/ExchangeToken`;
-const GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
-const GET_USER_INFO_WITH_JWT_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfoWithJwt`;
-
-class OAuthService {
-  constructor(private client: ReturnType<typeof axios.create>) {
-    console.log("[OAuth] Initialized with baseURL:", ENV.oAuthServerUrl);
-    if (!ENV.oAuthServerUrl) {
-      console.error(
-        "[OAuth] ERROR: OAUTH_SERVER_URL is not configured! Set OAUTH_SERVER_URL environment variable."
-      );
-    }
-  }
-
-  private decodeState(state: string): string {
-    const redirectUri = atob(state);
-    return redirectUri;
-  }
-
-  async getTokenByCode(
-    code: string,
-    state: string
-  ): Promise<ExchangeTokenResponse> {
-    const payload: ExchangeTokenRequest = {
-      clientId: ENV.appId,
-      grantType: "authorization_code",
-      code,
-      redirectUri: this.decodeState(state),
-    };
-
-    const { data } = await this.client.post<ExchangeTokenResponse>(
-      EXCHANGE_TOKEN_PATH,
-      payload
-    );
-
-    return data;
-  }
-
-  async getUserInfoByToken(
-    token: ExchangeTokenResponse
-  ): Promise<GetUserInfoResponse> {
-    const { data } = await this.client.post<GetUserInfoResponse>(
-      GET_USER_INFO_PATH,
-      {
-        accessToken: token.accessToken,
-      }
-    );
-
-    return data;
-  }
-}
+const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
 const createOAuthHttpClient = (): AxiosInstance =>
   axios.create({
@@ -84,33 +49,18 @@ const createOAuthHttpClient = (): AxiosInstance =>
 
 class SDKServer {
   private readonly client: AxiosInstance;
-  private readonly oauthService: OAuthService;
 
   constructor(client: AxiosInstance = createOAuthHttpClient()) {
     this.client = client;
-    this.oauthService = new OAuthService(this.client);
+    if (!ENV.googleClientId || !ENV.googleClientSecret) {
+      console.error(
+        "[OAuth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET in environment."
+      );
+    }
   }
 
-  private deriveLoginMethod(
-    platforms: unknown,
-    fallback: string | null | undefined
-  ): string | null {
-    if (fallback && fallback.length > 0) return fallback;
-    if (!Array.isArray(platforms) || platforms.length === 0) return null;
-    const set = new Set<string>(
-      platforms.filter((p): p is string => typeof p === "string")
-    );
-    if (set.has("REGISTERED_PLATFORM_EMAIL")) return "email";
-    if (set.has("REGISTERED_PLATFORM_GOOGLE")) return "google";
-    if (set.has("REGISTERED_PLATFORM_APPLE")) return "apple";
-    if (
-      set.has("REGISTERED_PLATFORM_MICROSOFT") ||
-      set.has("REGISTERED_PLATFORM_AZURE")
-    )
-      return "microsoft";
-    if (set.has("REGISTERED_PLATFORM_GITHUB")) return "github";
-    const first = Array.from(set)[0];
-    return first ? first.toLowerCase() : null;
+  private decodeState(state: string): string {
+    return Buffer.from(state, "base64").toString("utf8");
   }
 
   /**
@@ -122,7 +72,34 @@ class SDKServer {
     code: string,
     state: string
   ): Promise<ExchangeTokenResponse> {
-    return this.oauthService.getTokenByCode(code, state);
+    const redirectUri = this.decodeState(state);
+    const payload = new URLSearchParams({
+      client_id: ENV.googleClientId || ENV.appId,
+      client_secret: ENV.googleClientSecret,
+      code,
+      redirect_uri: redirectUri,
+      grant_type: "authorization_code",
+    });
+
+    const { data } = await this.client.post<{
+      access_token: string;
+      token_type: string;
+      expires_in: number;
+      refresh_token?: string;
+      scope?: string;
+      id_token?: string;
+    }>(GOOGLE_TOKEN_URL, payload, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+
+    return {
+      accessToken: data.access_token,
+      tokenType: data.token_type,
+      expiresIn: data.expires_in,
+      refreshToken: data.refresh_token,
+      scope: data.scope,
+      idToken: data.id_token,
+    };
   }
 
   /**
@@ -131,17 +108,21 @@ class SDKServer {
    * const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
    */
   async getUserInfo(accessToken: string): Promise<GetUserInfoResponse> {
-    const data = await this.oauthService.getUserInfoByToken({
-      accessToken,
-    } as ExchangeTokenResponse);
-    const loginMethod = this.deriveLoginMethod(
-      (data as any)?.platforms,
-      (data as any)?.platform ?? data.platform ?? null
-    );
+    const { data } = await this.client.get<{
+      sub: string;
+      name?: string;
+      email?: string;
+    }>(GOOGLE_USERINFO_URL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
     return {
-      ...(data as any),
-      platform: loginMethod,
-      loginMethod,
+      openId: data.sub,
+      projectId: ENV.googleClientId || ENV.appId,
+      name: data.name ?? "",
+      email: data.email ?? null,
+      platform: "google",
+      loginMethod: "google",
     } as GetUserInfoResponse;
   }
 
@@ -235,24 +216,19 @@ class SDKServer {
   async getUserInfoWithJwt(
     jwtToken: string
   ): Promise<GetUserInfoWithJwtResponse> {
-    const payload: GetUserInfoWithJwtRequest = {
-      jwtToken,
-      projectId: ENV.appId,
-    };
+    const session = await this.verifySession(jwtToken);
 
-    const { data } = await this.client.post<GetUserInfoWithJwtResponse>(
-      GET_USER_INFO_WITH_JWT_PATH,
-      payload
-    );
+    if (!session) {
+      throw ForbiddenError("Invalid session cookie");
+    }
 
-    const loginMethod = this.deriveLoginMethod(
-      (data as any)?.platforms,
-      (data as any)?.platform ?? data.platform ?? null
-    );
     return {
-      ...(data as any),
-      platform: loginMethod,
-      loginMethod,
+      openId: session.openId,
+      projectId: ENV.googleClientId || ENV.appId,
+      name: session.name,
+      email: null,
+      platform: "google",
+      loginMethod: "google",
     } as GetUserInfoWithJwtResponse;
   }
 
