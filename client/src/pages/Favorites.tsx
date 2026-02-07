@@ -8,9 +8,12 @@ import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Favorites() {
   const { isAuthenticated } = useAuth();
-  const { data: favoritesList, isLoading } = trpc.favorites.list.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { data: favoritesList, isLoading } = trpc.favorites.list.useQuery(
+    undefined,
+    {
+      enabled: isAuthenticated,
+    }
+  );
 
   if (!isAuthenticated) {
     return (
@@ -21,7 +24,8 @@ export default function Favorites() {
             <Heart className="w-16 h-16 text-accent/50 mx-auto" />
             <h1 className="text-3xl font-bold">Sign In to View Favorites</h1>
             <p className="text-muted-foreground max-w-md">
-              Create an account or sign in to save your favorite properties and access them anytime.
+              Create an account or sign in to save your favorite properties and
+              access them anytime.
             </p>
             <Button size="lg" className="bg-accent hover:bg-accent/90">
               Sign In
@@ -49,32 +53,47 @@ export default function Favorites() {
         <div className="container">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-96 bg-muted rounded-lg animate-pulse" />
+              {[1, 2, 3].map(i => (
+                <div
+                  key={i}
+                  className="h-96 bg-muted rounded-lg animate-pulse"
+                />
               ))}
             </div>
           ) : favoritesList && favoritesList.length > 0 ? (
             <div className="space-y-6">
               <p className="text-muted-foreground">
-                You have <span className="font-semibold text-foreground">{favoritesList.length}</span> saved properties
+                You have{" "}
+                <span className="font-semibold text-foreground">
+                  {favoritesList.length}
+                </span>{" "}
+                saved properties
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {favoritesList.map((favorite: any) => (
-                  <Link key={favorite.id} href={`/property/${favorite.propertyId}`}>
+                  <Link
+                    key={favorite.id}
+                    href={`/property/${favorite.propertyId}`}
+                  >
                     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col group">
                       {/* Property Image Placeholder */}
-                      <div className="w-full h-48 bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center group-hover:from-accent/30 group-hover:to-accent/10 transition-colors">
+                      <div className="w-full h-48 bg-linear-to-br from-accent/20 to-accent/5 flex items-center justify-center group-hover:from-accent/30 group-hover:to-accent/10 transition-colors">
                         <div className="text-center">
                           <MapPin className="w-8 h-8 text-accent/50 mx-auto mb-2" />
-                          <p className="text-sm text-muted-foreground">Property Image</p>
+                          <p className="text-sm text-muted-foreground">
+                            Property Image
+                          </p>
                         </div>
                       </div>
 
                       {/* Property Info */}
                       <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="font-semibold text-lg line-clamp-2 mb-2">Property #{favorite.propertyId}</h3>
+                        <h3 className="font-semibold text-lg line-clamp-2 mb-2">
+                          Property #{favorite.propertyId}
+                        </h3>
                         <p className="text-sm text-muted-foreground mb-4">
-                          Saved on {new Date(favorite.createdAt).toLocaleDateString()}
+                          Saved on{" "}
+                          {new Date(favorite.createdAt).toLocaleDateString()}
                         </p>
 
                         <div className="mt-auto">
@@ -93,9 +112,14 @@ export default function Favorites() {
               <Heart className="w-16 h-16 text-accent/20 mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">No Favorites Yet</h2>
               <p className="text-muted-foreground mb-6">
-                Start exploring properties and save your favorites to view them later.
+                Start exploring properties and save your favorites to view them
+                later.
               </p>
-              <Button size="lg" asChild className="bg-accent hover:bg-accent/90">
+              <Button
+                size="lg"
+                asChild
+                className="bg-accent hover:bg-accent/90"
+              >
                 <Link href="/properties">Browse Properties</Link>
               </Button>
             </div>

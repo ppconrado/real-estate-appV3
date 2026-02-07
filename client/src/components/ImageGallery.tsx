@@ -22,11 +22,11 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
   const currentImage = images[selectedIndex];
 
   const handlePrevious = () => {
-    setSelectedIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    setSelectedIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -39,6 +39,8 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
             src={currentImage.imageUrl}
             alt={currentImage.caption || title || "Property image"}
             className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
             onClick={() => setIsLightboxOpen(true)}
           />
 
@@ -69,7 +71,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
 
           {/* Caption */}
           {currentImage.caption && (
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
+            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4 text-white">
               <p className="text-sm">{currentImage.caption}</p>
             </div>
           )}
@@ -82,7 +84,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
               <button
                 key={image.id}
                 onClick={() => setSelectedIndex(index)}
-                className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                className={`shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                   index === selectedIndex
                     ? "border-accent ring-2 ring-accent/50"
                     : "border-border hover:border-accent/50"
@@ -92,6 +94,8 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
                   src={image.imageUrl}
                   alt={`Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </button>
             ))}
@@ -117,6 +121,8 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
                 src={currentImage.imageUrl}
                 alt={currentImage.caption || title || "Property image"}
                 className="w-full h-full object-contain"
+                loading="eager"
+                decoding="async"
               />
 
               {/* Navigation */}
@@ -145,7 +151,9 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
 
             {/* Caption */}
             {currentImage.caption && (
-              <p className="text-white text-center mt-4">{currentImage.caption}</p>
+              <p className="text-white text-center mt-4">
+                {currentImage.caption}
+              </p>
             )}
           </div>
         </div>
