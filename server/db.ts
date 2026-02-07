@@ -1,9 +1,62 @@
 import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, properties, propertyImages, InsertPropertyImage, savedSearches, InsertSavedSearch, propertyViewings, InsertPropertyViewing } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import {
+  InsertUser,
+  users,
+  properties,
+  propertyImages,
+  InsertPropertyImage,
+  savedSearches,
+  InsertSavedSearch,
+  propertyViewings,
+  InsertPropertyViewing,
+  favorites,
+  inquiries,
+  comparisons,
+} from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
+
+const isTestEnv = () =>
+  process.env.NODE_ENV === "test" || process.env.VITEST === "true";
+
+type StoreKey =
+  | "properties"
+  | "propertyImages"
+  | "favorites"
+  | "inquiries"
+  | "comparisons"
+  | "savedSearches"
+  | "propertyViewings"
+  | "users";
+
+const testStore: Record<StoreKey, any[]> = {
+  properties: [],
+  propertyImages: [],
+  favorites: [],
+  inquiries: [],
+  comparisons: [],
+  savedSearches: [],
+  propertyViewings: [],
+  users: [],
+};
+
+const testIds: Record<StoreKey, number> = {
+  properties: 1,
+  propertyImages: 1,
+  favorites: 1,
+  inquiries: 1,
+  comparisons: 1,
+  savedSearches: 1,
+  propertyViewings: 1,
+  users: 1,
+};
+
+const nextTestId = (key: StoreKey) => testIds[key]++;
+
+export const getTestStore = () => testStore;
+export const isTestMode = () => isTestEnv();
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
@@ -56,8 +109,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
+      values.role = "admin";
+      updateSet.role = "admin";
     }
 
     if (!values.lastSignedIn) {
@@ -84,54 +137,117 @@ export async function getUserByOpenId(openId: string) {
     return undefined;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
 export async function getProperties(limit = 12, offset = 0) {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) {
+    if (!isTestEnv()) return [];
+    return testStore.properties.slice(offset, offset + limit);
+  }
   return db.select().from(properties).limit(limit).offset(offset);
 }
 
 export async function getPropertyById(id: number) {
   const db = await getDb();
-  if (!db) return undefined;
-  const result = await db.select().from(properties).where(eq(properties.id, id)).limit(1);
+  if (!db) {
+    if (!isTestEnv()) return undefined;
+    return testStore.properties.find(prop => prop.id === id);
+  }
+  const result = await db
+    .select()
+    .from(properties)
+    .where(eq(properties.id, id))
+    .limit(1);
   return result.length > 0 ? result[0] : undefined;
 }
 
 export async function getFeaturedProperties(limit = 6) {
   const db = await getDb();
-  if (!db) return [];
-  return db.select().from(properties).where(eq(properties.featured, true)).limit(limit);
+  if (!db) {
+    if (!isTestEnv()) return [];
+    return testStore.properties.filter(prop => prop.featured).slice(0, limit);
+  }
+  return db
+    .select()
+    .from(properties)
+    .where(eq(properties.featured, true))
+    .limit(limit);
 }
 
 export async function getPropertyImages(propertyId: number) {
   const db = await getDb();
-  if (!db) return [];
-  return db.select().from(propertyImages).where(eq(propertyImages.propertyId, propertyId)).orderBy(propertyImages.displayOrder);
+  if (!db) {
+    if (!isTestEnv()) return [];
+    return testStore.propertyImages
+      .filter(image => image.propertyId === propertyId)
+      .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  }
+  return db
+    .select()
+    .from(propertyImages)
+    .where(eq(propertyImages.propertyId, propertyId))
+    .orderBy(propertyImages.displayOrder);
 }
 
 export async function addPropertyImage(image: InsertPropertyImage) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const record = {
+      id: nextTestId("propertyImages"),
+      createdAt: new Date(),
+      ...image,
+    };
+    testStore.propertyImages.push(record);
+    return { insertId: record.id } as const;
+  }
   return db.insert(propertyImages).values(image);
 }
 
 export async function deletePropertyImage(imageId: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    testStore.propertyImages = testStore.propertyImages.filter(
+      image => image.id !== imageId
+    );
+    return { success: true } as const;
+  }
   return db.delete(propertyImages).where(eq(propertyImages.id, imageId));
 }
 
 export async function updateImageOrder(imageId: number, displayOrder: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  return db.update(propertyImages).set({ displayOrder }).where(eq(propertyImages.id, imageId));
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const image = testStore.propertyImages.find(item => item.id === imageId);
+    if (image) image.displayOrder = displayOrder;
+    return { success: true } as const;
+  }
+  return db
+    .update(propertyImages)
+    .set({ displayOrder })
+    .where(eq(propertyImages.id, imageId));
 }
 
+const normalizeAmenities = (amenities?: string[] | string) => {
+  if (!amenities) return [];
+  if (Array.isArray(amenities)) {
+    return amenities.map(a => a.trim()).filter(Boolean);
+  }
+  return amenities
+    .split(",")
+    .map(a => a.trim())
+    .filter(Boolean);
+};
 
 export async function createProperty(data: {
   title: string;
@@ -147,17 +263,40 @@ export async function createProperty(data: {
   latitude: number;
   longitude: number;
   description?: string;
-  amenities?: string;
+  amenities?: string[] | string;
   featured?: boolean;
   status?: string;
 }) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
-  const amenitiesList = data.amenities 
-    ? data.amenities.split(",").map(a => a.trim())
-    : [];
-  
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const record = {
+      id: nextTestId("properties"),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      title: data.title,
+      price: data.price,
+      propertyType: data.propertyType,
+      bedrooms: data.bedrooms,
+      bathrooms: data.bathrooms,
+      squareFeet: data.squareFeet,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      zipCode: data.zipCode,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      description: data.description,
+      amenities: normalizeAmenities(data.amenities),
+      featured: data.featured ?? false,
+      status: data.status ?? "available",
+    };
+    testStore.properties.push(record);
+    return { insertId: record.id } as const;
+  }
+
+  const amenitiesList = normalizeAmenities(data.amenities);
+
   const result = await db.insert(properties).values({
     title: data.title,
     price: data.price.toString(),
@@ -176,8 +315,118 @@ export async function createProperty(data: {
     featured: data.featured ?? false,
     status: (data.status as any) ?? "available",
   });
-  
+
   return result;
+}
+
+export async function updateProperty(
+  id: number,
+  data: {
+    title?: string;
+    price?: number;
+    propertyType?: string;
+    bedrooms?: number;
+    bathrooms?: number;
+    squareFeet?: number;
+    address?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+    latitude?: number;
+    longitude?: number;
+    description?: string;
+    amenities?: string[] | string;
+    featured?: boolean;
+    status?: string;
+  }
+) {
+  const db = await getDb();
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const record = testStore.properties.find(prop => prop.id === id);
+    if (!record)
+      return { success: false, message: "Property not found" } as const;
+
+    if (data.title !== undefined) record.title = data.title;
+    if (data.price !== undefined) record.price = data.price;
+    if (data.propertyType !== undefined)
+      record.propertyType = data.propertyType;
+    if (data.bedrooms !== undefined) record.bedrooms = data.bedrooms;
+    if (data.bathrooms !== undefined) record.bathrooms = data.bathrooms;
+    if (data.squareFeet !== undefined) record.squareFeet = data.squareFeet;
+    if (data.address !== undefined) record.address = data.address;
+    if (data.city !== undefined) record.city = data.city;
+    if (data.state !== undefined) record.state = data.state;
+    if (data.zipCode !== undefined) record.zipCode = data.zipCode;
+    if (data.latitude !== undefined) record.latitude = data.latitude;
+    if (data.longitude !== undefined) record.longitude = data.longitude;
+    if (data.description !== undefined) record.description = data.description;
+    if (data.amenities !== undefined)
+      record.amenities = normalizeAmenities(data.amenities);
+    if (data.featured !== undefined) record.featured = data.featured;
+    if (data.status !== undefined) record.status = data.status;
+    record.updatedAt = new Date();
+    return { success: true } as const;
+  }
+
+  const updateSet: Record<string, unknown> = {};
+
+  if (data.title !== undefined) updateSet.title = data.title;
+  if (data.price !== undefined) updateSet.price = data.price.toString();
+  if (data.propertyType !== undefined)
+    updateSet.propertyType = data.propertyType as any;
+  if (data.bedrooms !== undefined) updateSet.bedrooms = data.bedrooms;
+  if (data.bathrooms !== undefined) updateSet.bathrooms = data.bathrooms;
+  if (data.squareFeet !== undefined) updateSet.squareFeet = data.squareFeet;
+  if (data.address !== undefined) updateSet.address = data.address;
+  if (data.city !== undefined) updateSet.city = data.city;
+  if (data.state !== undefined) updateSet.state = data.state;
+  if (data.zipCode !== undefined) updateSet.zipCode = data.zipCode;
+  if (data.latitude !== undefined)
+    updateSet.latitude = data.latitude.toString();
+  if (data.longitude !== undefined)
+    updateSet.longitude = data.longitude.toString();
+  if (data.description !== undefined) updateSet.description = data.description;
+  if (data.amenities !== undefined) {
+    const amenitiesList = normalizeAmenities(data.amenities);
+    updateSet.amenities = amenitiesList.length > 0 ? amenitiesList : [];
+  }
+  if (data.featured !== undefined) updateSet.featured = data.featured;
+  if (data.status !== undefined) updateSet.status = data.status as any;
+
+  if (Object.keys(updateSet).length === 0) {
+    return { success: false, message: "No updates provided" } as const;
+  }
+
+  await db.update(properties).set(updateSet).where(eq(properties.id, id));
+  return { success: true } as const;
+}
+
+export async function deleteProperty(id: number) {
+  const db = await getDb();
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    testStore.propertyImages = testStore.propertyImages.filter(
+      image => image.propertyId !== id
+    );
+    testStore.favorites = testStore.favorites.filter(
+      favorite => favorite.propertyId !== id
+    );
+    testStore.inquiries = testStore.inquiries.filter(
+      inquiry => inquiry.propertyId !== id
+    );
+    testStore.propertyViewings = testStore.propertyViewings.filter(
+      viewing => viewing.propertyId !== id
+    );
+    testStore.properties = testStore.properties.filter(prop => prop.id !== id);
+    return { success: true } as const;
+  }
+
+  await db.delete(propertyImages).where(eq(propertyImages.propertyId, id));
+  await db.delete(favorites).where(eq(favorites.propertyId, id));
+  await db.delete(inquiries).where(eq(inquiries.propertyId, id));
+  await db.delete(propertyViewings).where(eq(propertyViewings.propertyId, id));
+  return db.delete(properties).where(eq(properties.id, id));
 }
 
 export async function bulkCreateProperties(
@@ -202,7 +451,7 @@ export async function bulkCreateProperties(
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   const results = [];
   for (const data of propertiesData) {
     try {
@@ -212,10 +461,9 @@ export async function bulkCreateProperties(
       results.push({ success: false, data, error });
     }
   }
-  
+
   return results;
 }
-
 
 export async function getPropertiesByAmenities(
   amenities: string[],
@@ -233,14 +481,14 @@ export async function getPropertiesByAmenities(
   // This is because MySQL JSON_CONTAINS with arrays is complex
   const allProperties = await db.select().from(properties);
 
-  const filtered = allProperties.filter((prop) => {
+  const filtered = allProperties.filter(prop => {
     if (!prop.amenities || typeof prop.amenities !== "object") return false;
     const propAmenities = Array.isArray(prop.amenities)
       ? prop.amenities
       : Object.values(prop.amenities);
-    return amenities.every((amenity) =>
+    return amenities.every(amenity =>
       propAmenities.some(
-        (a) =>
+        a =>
           typeof a === "string" &&
           a.toLowerCase().includes(amenity.toLowerCase())
       )
@@ -282,11 +530,15 @@ export async function getPropertiesByFilters(filters: {
   }
 
   if (filters.bedrooms !== undefined) {
-    filtered = filtered.filter((prop: any) => prop.bedrooms === filters.bedrooms);
+    filtered = filtered.filter(
+      (prop: any) => prop.bedrooms === filters.bedrooms
+    );
   }
 
   if (filters.bathrooms !== undefined) {
-    filtered = filtered.filter((prop: any) => prop.bathrooms === filters.bathrooms);
+    filtered = filtered.filter(
+      (prop: any) => prop.bathrooms === filters.bathrooms
+    );
   }
 
   if (filters.propertyType) {
@@ -302,7 +554,7 @@ export async function getPropertiesByFilters(filters: {
       const propAmenities = Array.isArray(prop.amenities)
         ? prop.amenities
         : Object.values(prop.amenities);
-      return filters.amenities!.every((amenity) =>
+      return filters.amenities!.every(amenity =>
         propAmenities.some(
           (a: any) =>
             typeof a === "string" &&
@@ -318,7 +570,6 @@ export async function getPropertiesByFilters(filters: {
   return filtered.slice(offset, offset + limit);
 }
 
-
 // Saved Searches queries
 export async function createSavedSearch(
   userId: number,
@@ -333,7 +584,24 @@ export async function createSavedSearch(
   }
 ) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const record = {
+      id: nextTestId("savedSearches"),
+      userId,
+      name,
+      minPrice: filters.minPrice ? String(filters.minPrice) : null,
+      maxPrice: filters.maxPrice ? String(filters.maxPrice) : null,
+      bedrooms: filters.bedrooms ?? null,
+      bathrooms: filters.bathrooms ?? null,
+      propertyType: filters.propertyType ?? null,
+      amenities: filters.amenities ?? [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    testStore.savedSearches.push(record);
+    return { insertId: record.id } as const;
+  }
 
   const result = await db.insert(savedSearches).values({
     userId,
@@ -351,14 +619,25 @@ export async function createSavedSearch(
 
 export async function getSavedSearches(userId: number) {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) {
+    if (!isTestEnv()) return [];
+    return testStore.savedSearches.filter(search => search.userId === userId);
+  }
 
-  return db.select().from(savedSearches).where(eq(savedSearches.userId, userId));
+  return db
+    .select()
+    .from(savedSearches)
+    .where(eq(savedSearches.userId, userId));
 }
 
 export async function getSavedSearchById(id: number, userId: number) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) {
+    if (!isTestEnv()) return undefined;
+    return testStore.savedSearches.find(
+      search => search.id === id && search.userId === userId
+    );
+  }
 
   const result = await db
     .select()
@@ -383,15 +662,36 @@ export async function updateSavedSearch(
   }
 ) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const record = testStore.savedSearches.find(
+      search => search.id === id && search.userId === userId
+    );
+    if (!record) return { success: false } as const;
+    if (updates.name !== undefined) record.name = updates.name;
+    if (updates.minPrice !== undefined)
+      record.minPrice = String(updates.minPrice);
+    if (updates.maxPrice !== undefined)
+      record.maxPrice = String(updates.maxPrice);
+    if (updates.bedrooms !== undefined) record.bedrooms = updates.bedrooms;
+    if (updates.bathrooms !== undefined) record.bathrooms = updates.bathrooms;
+    if (updates.propertyType !== undefined)
+      record.propertyType = updates.propertyType;
+    if (updates.amenities !== undefined) record.amenities = updates.amenities;
+    record.updatedAt = new Date();
+    return { success: true } as const;
+  }
 
   const updateData: any = {};
   if (updates.name !== undefined) updateData.name = updates.name;
-  if (updates.minPrice !== undefined) updateData.minPrice = String(updates.minPrice);
-  if (updates.maxPrice !== undefined) updateData.maxPrice = String(updates.maxPrice);
+  if (updates.minPrice !== undefined)
+    updateData.minPrice = String(updates.minPrice);
+  if (updates.maxPrice !== undefined)
+    updateData.maxPrice = String(updates.maxPrice);
   if (updates.bedrooms !== undefined) updateData.bedrooms = updates.bedrooms;
   if (updates.bathrooms !== undefined) updateData.bathrooms = updates.bathrooms;
-  if (updates.propertyType !== undefined) updateData.propertyType = updates.propertyType;
+  if (updates.propertyType !== undefined)
+    updateData.propertyType = updates.propertyType;
   if (updates.amenities !== undefined) updateData.amenities = updates.amenities;
 
   return db
@@ -402,19 +702,37 @@ export async function updateSavedSearch(
 
 export async function deleteSavedSearch(id: number, userId: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    testStore.savedSearches = testStore.savedSearches.filter(
+      search => !(search.id === id && search.userId === userId)
+    );
+    return { success: true } as const;
+  }
 
   return db
     .delete(savedSearches)
     .where(and(eq(savedSearches.id, id), eq(savedSearches.userId, userId)));
 }
 
-
 // Property Viewings Management
 
 export async function createPropertyViewing(viewing: InsertPropertyViewing) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const record = {
+      id: nextTestId("propertyViewings"),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      reminderSent: false,
+      status: viewing.status ?? "scheduled",
+      duration: viewing.duration ?? 30,
+      ...viewing,
+    };
+    testStore.propertyViewings.push(record);
+    return { insertId: record.id } as const;
+  }
 
   const result = await db.insert(propertyViewings).values(viewing);
   return result;
@@ -422,7 +740,12 @@ export async function createPropertyViewing(viewing: InsertPropertyViewing) {
 
 export async function getPropertyViewings(propertyId: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    return testStore.propertyViewings.filter(
+      viewing => viewing.propertyId === propertyId
+    );
+  }
 
   return db
     .select()
@@ -432,7 +755,12 @@ export async function getPropertyViewings(propertyId: number) {
 
 export async function getUserViewings(userId: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    return testStore.propertyViewings.filter(
+      viewing => viewing.userId === userId
+    );
+  }
 
   return db
     .select()
@@ -442,7 +770,10 @@ export async function getUserViewings(userId: number) {
 
 export async function getViewingById(viewingId: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    return testStore.propertyViewings.find(viewing => viewing.id === viewingId);
+  }
 
   const result = await db
     .select()
@@ -453,9 +784,20 @@ export async function getViewingById(viewingId: number) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function updateViewing(viewingId: number, updates: Partial<InsertPropertyViewing>) {
+export async function updateViewing(
+  viewingId: number,
+  updates: Partial<InsertPropertyViewing>
+) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const record = testStore.propertyViewings.find(
+      viewing => viewing.id === viewingId
+    );
+    if (!record) return { success: false } as const;
+    Object.assign(record, updates, { updatedAt: new Date() });
+    return { success: true } as const;
+  }
 
   return db
     .update(propertyViewings)
@@ -465,16 +807,46 @@ export async function updateViewing(viewingId: number, updates: Partial<InsertPr
 
 export async function deleteViewing(viewingId: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    testStore.propertyViewings = testStore.propertyViewings.filter(
+      viewing => viewing.id !== viewingId
+    );
+    return { success: true } as const;
+  }
 
-  return db
-    .delete(propertyViewings)
-    .where(eq(propertyViewings.id, viewingId));
+  return db.delete(propertyViewings).where(eq(propertyViewings.id, viewingId));
 }
 
-export async function checkViewingConflict(propertyId: number, viewingDate: Date, viewingTime: string, duration: number = 30) {
+export async function checkViewingConflict(
+  propertyId: number,
+  viewingDate: Date,
+  viewingTime: string,
+  duration: number = 30
+) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    const viewings = testStore.propertyViewings.filter(
+      viewing => viewing.propertyId === propertyId
+    );
+    const dateStr = viewingDate.toISOString().split("T")[0];
+
+    for (const viewing of viewings) {
+      const existingDateStr = new Date(viewing.viewingDate)
+        .toISOString()
+        .split("T")[0];
+
+      if (existingDateStr === dateStr && viewing.status !== "cancelled") {
+        const existingTime = viewing.viewingTime;
+        if (existingTime === viewingTime) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 
   // Get all viewings for this property on the same date
   const viewings = await db
@@ -483,12 +855,14 @@ export async function checkViewingConflict(propertyId: number, viewingDate: Date
     .where(eq(propertyViewings.propertyId, propertyId));
 
   // Filter for same date and check for time conflicts
-  const dateStr = viewingDate.toISOString().split('T')[0];
-  
+  const dateStr = viewingDate.toISOString().split("T")[0];
+
   for (const viewing of viewings) {
-    const existingDateStr = new Date(viewing.viewingDate).toISOString().split('T')[0];
-    
-    if (existingDateStr === dateStr && viewing.status !== 'cancelled') {
+    const existingDateStr = new Date(viewing.viewingDate)
+      .toISOString()
+      .split("T")[0];
+
+    if (existingDateStr === dateStr && viewing.status !== "cancelled") {
       // Simple time conflict check
       const existingTime = viewing.viewingTime;
       if (existingTime === viewingTime) {
@@ -500,7 +874,6 @@ export async function checkViewingConflict(propertyId: number, viewingDate: Date
   return false; // No conflict
 }
 
-
 export async function getAllViewings(filters?: {
   status?: string;
   propertyId?: number;
@@ -509,10 +882,57 @@ export async function getAllViewings(filters?: {
   searchQuery?: string;
 }) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (!isTestEnv()) throw new Error("Database not available");
+    let results = [...testStore.propertyViewings];
 
-  const { eq: eqOp, and: andOp, gte: gteOp, lte: lteOp, or: orOp, like: likeOp } = await import("drizzle-orm");
-  
+    if (filters?.status) {
+      results = results.filter(viewing => viewing.status === filters.status);
+    }
+
+    if (filters?.propertyId) {
+      results = results.filter(
+        viewing => viewing.propertyId === filters.propertyId
+      );
+    }
+
+    if (filters?.startDate) {
+      results = results.filter(
+        viewing => new Date(viewing.viewingDate) >= filters.startDate!
+      );
+    }
+
+    if (filters?.endDate) {
+      results = results.filter(
+        viewing => new Date(viewing.viewingDate) <= filters.endDate!
+      );
+    }
+
+    if (filters?.searchQuery) {
+      const query = filters.searchQuery.toLowerCase();
+      results = results.filter(viewing => {
+        return (
+          viewing.visitorName.toLowerCase().includes(query) ||
+          viewing.visitorEmail.toLowerCase().includes(query) ||
+          (viewing.visitorPhone
+            ? viewing.visitorPhone.toLowerCase().includes(query)
+            : false)
+        );
+      });
+    }
+
+    return results;
+  }
+
+  const {
+    eq: eqOp,
+    and: andOp,
+    gte: gteOp,
+    lte: lteOp,
+    or: orOp,
+    like: likeOp,
+  } = await import("drizzle-orm");
+
   const conditions: any[] = [];
 
   if (filters?.status) {

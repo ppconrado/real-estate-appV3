@@ -1,4 +1,4 @@
-import { getDb } from "../db";
+import { getDb, getTestStore, isTestMode } from "../db";
 import { propertyViewings } from "../../drizzle/schema";
 import { sendViewingReminderEmail } from "../emailService";
 import { eq, and, gte, lte } from "drizzle-orm";
@@ -6,7 +6,7 @@ import { eq, and, gte, lte } from "drizzle-orm";
 /**
  * Viewing Reminder Job
  * Sends reminder emails to visitors 24 hours before their scheduled viewing
- * 
+ *
  * This job should run every hour to check for viewings that are scheduled
  * for approximately 24 hours from now
  */
@@ -24,13 +24,13 @@ interface ReminderJobResult {
  */
 function getReminderTimeWindow() {
   const now = new Date();
-  
+
   // 23 hours from now (earliest reminder window)
   const windowStart = new Date(now.getTime() + 23 * 60 * 60 * 1000);
-  
+
   // 25 hours from now (latest reminder window)
   const windowEnd = new Date(now.getTime() + 25 * 60 * 60 * 1000);
-  
+
   return { windowStart, windowEnd };
 }
 
@@ -40,8 +40,22 @@ function getReminderTimeWindow() {
 async function getViewingsNeedingReminders() {
   const { windowStart, windowEnd } = getReminderTimeWindow();
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
+  if (!db) {
+    if (isTestMode()) {
+      const store = getTestStore();
+      return store.propertyViewings.filter(viewing => {
+        const viewingDate = new Date(viewing.viewingDate);
+        return (
+          viewing.status === "scheduled" &&
+          viewingDate >= windowStart &&
+          viewingDate <= windowEnd &&
+          viewing.reminderSent === false
+        );
+      });
+    }
+    throw new Error("Database not available");
+  }
+
   const upcomingViewings = await db
     .select()
     .from(propertyViewings)
@@ -53,7 +67,7 @@ async function getViewingsNeedingReminders() {
         eq(propertyViewings.reminderSent, false) // Only send reminder once
       )
     );
-  
+
   return upcomingViewings;
 }
 
@@ -62,7 +76,17 @@ async function getViewingsNeedingReminders() {
  */
 async function markReminderSent(viewingId: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  if (!db) {
+    if (isTestMode()) {
+      const store = getTestStore();
+      const viewing = store.propertyViewings.find(
+        item => item.id === viewingId
+      );
+      if (viewing) viewing.reminderSent = true;
+      return;
+    }
+    throw new Error("Database not available");
+  }
   await db
     .update(propertyViewings)
     .set({ reminderSent: true })
@@ -83,9 +107,11 @@ export async function executeViewingReminderJob(): Promise<ReminderJobResult> {
 
   try {
     console.log("[Reminder Job] Starting viewing reminder job...");
-    
+
     const viewingsToRemind = await getViewingsNeedingReminders();
-    console.log(`[Reminder Job] Found ${viewingsToRemind.length} viewings needing reminders`);
+    console.log(
+      `[Reminder Job] Found ${viewingsToRemind.length} viewings needing reminders`
+    );
 
     for (const viewing of viewingsToRemind) {
       try {
@@ -105,16 +131,22 @@ export async function executeViewingReminderJob(): Promise<ReminderJobResult> {
 
         // Mark reminder as sent
         await markReminderSent(viewing.id);
-        
+
         result.remindersSent++;
-        console.log(`[Reminder Job] Reminder sent for viewing ${viewing.id} to ${viewing.visitorEmail}`);
+        console.log(
+          `[Reminder Job] Reminder sent for viewing ${viewing.id} to ${viewing.visitorEmail}`
+        );
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         result.errors.push({
           viewingId: viewing.id,
           error: errorMessage,
         });
-        console.error(`[Reminder Job] Failed to send reminder for viewing ${viewing.id}:`, error);
+        console.error(
+          `[Reminder Job] Failed to send reminder for viewing ${viewing.id}:`,
+          error
+        );
       }
     }
 
@@ -135,8 +167,36 @@ export async function executeViewingReminderJob(): Promise<ReminderJobResult> {
 export async function getReminderJobStats() {
   const { windowStart, windowEnd } = getReminderTimeWindow();
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
+  if (!db) {
+    if (isTestMode()) {
+      const store = getTestStore();
+      const viewingsInWindow = store.propertyViewings.filter(viewing => {
+        const viewingDate = new Date(viewing.viewingDate);
+        return (
+          viewing.status === "scheduled" &&
+          viewingDate >= windowStart &&
+          viewingDate <= windowEnd
+        );
+      });
+
+      const remindersSent = viewingsInWindow.filter(
+        (v: any) => v.reminderSent
+      ).length;
+      const remindersNeeded = viewingsInWindow.filter(
+        (v: any) => !v.reminderSent
+      ).length;
+
+      return {
+        windowStart,
+        windowEnd,
+        totalViewingsInWindow: viewingsInWindow.length,
+        remindersSent,
+        remindersNeeded,
+      };
+    }
+    throw new Error("Database not available");
+  }
+
   const viewingsInWindow = await db
     .select()
     .from(propertyViewings)
@@ -148,8 +208,12 @@ export async function getReminderJobStats() {
       )
     );
 
-  const remindersSent = viewingsInWindow.filter((v: any) => v.reminderSent).length;
-  const remindersNeeded = viewingsInWindow.filter((v: any) => !v.reminderSent).length;
+  const remindersSent = viewingsInWindow.filter(
+    (v: any) => v.reminderSent
+  ).length;
+  const remindersNeeded = viewingsInWindow.filter(
+    (v: any) => !v.reminderSent
+  ).length;
 
   return {
     windowStart,

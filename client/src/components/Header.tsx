@@ -24,7 +24,10 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-semibold text-xl text-foreground hover:opacity-80 transition-opacity">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-semibold text-xl text-foreground hover:opacity-80 transition-opacity"
+        >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center">
             <span className="text-white font-bold">RE</span>
           </div>
@@ -33,13 +36,22 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="/properties" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            href="/properties"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
             Properties
           </Link>
-          <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            href="/about"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
             About
           </Link>
-          <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            href="/contact"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
             Contact
           </Link>
         </nav>
@@ -48,11 +60,17 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-4">
           {isAuthenticated ? (
             <>
-              <Link href="/favorites" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link
+                href="/favorites"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
                 Favorites
               </Link>
               {comparisonProperties.length > 0 && (
-                <Link href="/comparison" className="relative text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+                <Link
+                  href="/comparison"
+                  className="relative text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                >
                   <Scale className="w-4 h-4" />
                   Compare
                   <span className="absolute -top-2 -right-2 bg-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -60,7 +78,18 @@ export default function Header() {
                   </span>
                 </Link>
               )}
-              <Link href="/profile" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {user?.role === "admin" && (
+                <Link
+                  href="/admin"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
+              <Link
+                href="/profile"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
                 {user?.name || "Profile"}
               </Link>
               <Button variant="outline" size="sm" onClick={handleLogout}>
@@ -80,7 +109,11 @@ export default function Header() {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
-          {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {isMenuOpen ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <Menu className="w-5 h-5" />
+          )}
         </button>
       </div>
 
@@ -88,30 +121,61 @@ export default function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t border-border bg-card">
           <nav className="container py-4 flex flex-col gap-4">
-            <Link href="/properties" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="/properties"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               Properties
             </Link>
-            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="/about"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               About
             </Link>
-            <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="/contact"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               Contact
             </Link>
             {isAuthenticated ? (
               <>
-                <Link href="/favorites" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/favorites"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Favorites
                 </Link>
                 {comparisonProperties.length > 0 && (
-                  <Link href="/comparison" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+                  <Link
+                    href="/comparison"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                  >
                     <Scale className="w-4 h-4" />
                     Compare ({comparisonProperties.length})
                   </Link>
                 )}
-                <Link href="/profile" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {user?.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
+                <Link
+                  href="/profile"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   {user?.name || "Profile"}
                 </Link>
-                <Button variant="outline" size="sm" onClick={handleLogout} className="w-full">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="w-full"
+                >
                   Logout
                 </Button>
               </>

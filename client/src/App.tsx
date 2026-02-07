@@ -13,6 +13,8 @@ import Contact from "./pages/Contact";
 import Comparison from "./pages/Comparison";
 import BulkImport from "./pages/BulkImport";
 import ViewingsDashboard from "./pages/admin/ViewingsDashboard";
+import InquiriesDashboard from "./pages/admin/InquiriesDashboard";
+import Profile from "./pages/Profile";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -26,7 +28,9 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/import" component={BulkImport} />
       <Route path="/admin/viewings" component={ViewingsDashboard} />
+      <Route path="/admin/inquiries" component={InquiriesDashboard} />
       <Route path="/contact" component={Contact} />
+      <Route path="/profile" component={Profile} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

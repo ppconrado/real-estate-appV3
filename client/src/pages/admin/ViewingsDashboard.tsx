@@ -44,7 +44,7 @@ export default function ViewingsDashboard() {
   const [selectedViewings, setSelectedViewings] = useState<number[]>([]);
   const [bulkAction, setBulkAction] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
   // Redirect non-admins
@@ -54,9 +54,13 @@ export default function ViewingsDashboard() {
   }
 
   // Fetch all viewings with filters
-  const { data: viewings = [], isLoading, refetch } = trpc.viewings.listAll.useQuery(
+  const {
+    data: viewings = [],
+    isLoading,
+    refetch,
+  } = trpc.viewings.listAll.useQuery(
     {
-      status: (statusFilter as any) || undefined,
+      status: statusFilter === "all" ? undefined : (statusFilter as any),
       searchQuery: searchQuery || undefined,
       startDate: dateRange.start ? new Date(dateRange.start) : undefined,
       endDate: dateRange.end ? new Date(dateRange.end) : undefined,
@@ -124,9 +128,9 @@ export default function ViewingsDashboard() {
 
   // Toggle viewing selection
   const toggleSelection = (viewingId: number) => {
-    setSelectedViewings((prev) =>
+    setSelectedViewings(prev =>
       prev.includes(viewingId)
-        ? prev.filter((id) => id !== viewingId)
+        ? prev.filter(id => id !== viewingId)
         : [...prev, viewingId]
     );
   };
@@ -136,7 +140,7 @@ export default function ViewingsDashboard() {
     if (selectedViewings.length === viewings.length) {
       setSelectedViewings([]);
     } else {
-      setSelectedViewings(viewings.map((v) => v.id));
+      setSelectedViewings(viewings.map(v => v.id));
     }
   };
 
@@ -183,7 +187,9 @@ export default function ViewingsDashboard() {
             <div className="text-sm font-medium text-slate-600 mb-1">
               Total Viewings
             </div>
-            <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
+            <div className="text-2xl font-bold text-slate-900">
+              {stats.total}
+            </div>
           </Card>
           <Card className="p-4 border-yellow-200">
             <div className="text-sm font-medium text-yellow-700 mb-1">
@@ -233,7 +239,7 @@ export default function ViewingsDashboard() {
               <Input
                 placeholder="Search by name, email, phone..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -244,7 +250,7 @@ export default function ViewingsDashboard() {
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="scheduled">Scheduled</SelectItem>
                 <SelectItem value="confirmed">Confirmed</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
@@ -256,7 +262,7 @@ export default function ViewingsDashboard() {
             <Input
               type="date"
               value={dateRange.start}
-              onChange={(e) =>
+              onChange={e =>
                 setDateRange({ ...dateRange, start: e.target.value })
               }
               placeholder="Start Date"
@@ -266,7 +272,7 @@ export default function ViewingsDashboard() {
             <Input
               type="date"
               value={dateRange.end}
-              onChange={(e) =>
+              onChange={e =>
                 setDateRange({ ...dateRange, end: e.target.value })
               }
               placeholder="End Date"
@@ -282,10 +288,7 @@ export default function ViewingsDashboard() {
                 {selectedViewings.length} viewing(s) selected
               </div>
               <div className="flex items-center gap-2">
-                <Select
-                  value={bulkAction as any}
-                  onValueChange={setBulkAction}
-                >
+                <Select value={bulkAction as any} onValueChange={setBulkAction}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Select action..." />
                   </SelectTrigger>
@@ -388,13 +391,15 @@ export default function ViewingsDashboard() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 text-slate-600">
                           <Clock className="w-4 h-4" />
-                          <span className="text-sm">{viewing.duration} min</span>
+                          <span className="text-sm">
+                            {viewing.duration} min
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <Select
                           value={viewing.status}
-                          onValueChange={(value) =>
+                          onValueChange={value =>
                             handleStatusUpdate(viewing.id, value)
                           }
                         >
@@ -454,8 +459,16 @@ export default function ViewingsDashboard() {
             onClick={() => {
               // Export as CSV
               const csv = [
-                ["Visitor", "Email", "Phone", "Date", "Time", "Duration", "Status"],
-                ...viewings.map((v) => [
+                [
+                  "Visitor",
+                  "Email",
+                  "Phone",
+                  "Date",
+                  "Time",
+                  "Duration",
+                  "Status",
+                ],
+                ...viewings.map(v => [
                   v.visitorName,
                   v.visitorEmail,
                   v.visitorPhone || "",
@@ -465,7 +478,9 @@ export default function ViewingsDashboard() {
                   v.status,
                 ]),
               ]
-                .map((row: any) => row.map((cell: any) => `"${cell}"`).join(","))
+                .map((row: any) =>
+                  row.map((cell: any) => `"${cell}"`).join(",")
+                )
                 .join("\n");
 
               const blob = new Blob([csv], { type: "text/csv" });
