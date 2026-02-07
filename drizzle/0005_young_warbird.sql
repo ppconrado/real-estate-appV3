@@ -1,0 +1,1 @@
+ALTER TABLE `propertyViewings` ADD `reminderSent` boolean DEFAULT false NOT NULL;

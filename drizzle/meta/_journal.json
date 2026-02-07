@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1769532003181,
+      "tag": "0000_next_ultragirl",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1769532285501,
+      "tag": "0001_exotic_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1769532297053,
+      "tag": "0002_left_vapor",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1770001944875,
+      "tag": "0003_sour_blindfold",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1770088729750,
+      "tag": "0004_nostalgic_bloodaxe",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1770175328502,
+      "tag": "0005_young_warbird",
+      "breakpoints": true
+    }
+  ]
+}

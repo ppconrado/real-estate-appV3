@@ -1,0 +1,9 @@
+{
+  "query": "DROP TABLE IF EXISTS comparisons; DROP TABLE IF EXISTS inquiries; DROP TABLE IF EXISTS propertyImages; DROP TABLE IF EXISTS favorites; DROP TABLE IF EXISTS properties;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user zZyLjLaHUDEV9Wj.root --database YExgDtXqLtNpyegCKK6Egm --execute DROP TABLE IF EXISTS comparisons; DROP TABLE IF EXISTS inquiries; DROP TABLE IF EXISTS propertyImages; DROP TABLE IF EXISTS favorites; DROP TABLE IF EXISTS properties;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1750
+}
