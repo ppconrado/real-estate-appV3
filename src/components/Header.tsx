@@ -11,7 +11,13 @@ import { trpc } from "@/lib/trpc";
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const loginUrl = useMemo(() => getLoginUrl(), []);
+
+  const handleSignIn = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (typeof window !== "undefined") {
+      window.location.href = getLoginUrl();
+    }
+  };
 
   useEffect(() => {
     console.log("[Header] Auth state:", { isAuthenticated, user });
@@ -121,8 +127,10 @@ export default function Header() {
               </Button>
             </>
           ) : (
-            <Button size="sm" asChild disabled={!loginUrl}>
-              <a href={loginUrl || "#"}>Sign In</a>
+            <Button size="sm" asChild>
+              <a href="#" onClick={handleSignIn}>
+                Sign In
+              </a>
             </Button>
           )}
         </div>
@@ -199,8 +207,10 @@ export default function Header() {
                 </Button>
               </>
             ) : (
-              <Button size="sm" asChild className="w-full" disabled={!loginUrl}>
-                <a href={loginUrl || "#"}>Sign In</a>
+              <Button size="sm" asChild className="w-full">
+                <a href="#" onClick={handleSignIn}>
+                  Sign In
+                </a>
               </Button>
             )}
           </nav>
