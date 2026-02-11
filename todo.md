@@ -1,5 +1,19 @@
 # Real Estate Platform - Project TODO
 
+## Next.js Conversion (Current)
+
+- [x] Scaffold Next.js app (App Router + TS)
+- [x] Add Prisma + Postgres schema and seed
+- [x] Port homepage, listings, and property detail pages
+- [x] Add admin CRUD for properties
+- [x] Add admin inquiries, viewings, and contact messages
+- [x] Add admin auth guard (token cookie + middleware)
+- [x] Add Cloudinary uploads and image reordering
+- [x] Run Prisma db push after schema changes
+- [x] Run Prisma seed
+- [ ] Verify Cloudinary uploads in admin
+- [x] Run Next.js build and smoke tests
+
 ## Phase 1: Database & Schema
 
 - [x] Design and implement database schema for properties, users, favorites, inquiries
