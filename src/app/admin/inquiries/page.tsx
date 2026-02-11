@@ -1,4 +1,4 @@
-import InquiriesDashboard from "@/pages/admin/InquiriesDashboard";
+import InquiriesDashboard from "@/screens/admin/InquiriesDashboard";
 
 export const metadata = {
   title: "Admin Inquiries | RealEstate",

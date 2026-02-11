@@ -1,4 +1,4 @@
-import ViewingsDashboard from "@/pages/admin/ViewingsDashboard";
+import ViewingsDashboard from "@/screens/admin/ViewingsDashboard";
 
 export const metadata = {
   title: "Admin Viewings | RealEstate",

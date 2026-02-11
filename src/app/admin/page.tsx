@@ -1,4 +1,4 @@
-import AdminDashboard from "@/pages/AdminDashboard";
+import AdminDashboard from "@/screens/AdminDashboard";
 
 export const metadata = {
   title: "Admin | RealEstate",

@@ -1,4 +1,4 @@
-import Comparison from "@/pages/Comparison";
+import Comparison from "@/screens/Comparison";
 
 export default function ComparisonPage() {
   return <Comparison />;
