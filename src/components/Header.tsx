@@ -11,11 +11,7 @@ import { trpc } from "@/lib/trpc";
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [loginUrl, setLoginUrl] = useState("");
-
-  useEffect(() => {
-    setLoginUrl(getLoginUrl());
-  }, []);
+  const loginUrl = useMemo(() => getLoginUrl(), []);
 
   useEffect(() => {
     console.log("[Header] Auth state:", { isAuthenticated, user });
@@ -29,12 +25,16 @@ export default function Header() {
   // Unwrap SuperJSON envelope if present
   const comparisonProperties = useMemo(() => {
     if (!comparisonPropertiesRaw) return [];
-    if (
-      typeof comparisonPropertiesRaw === "object" &&
-      "json" in comparisonPropertiesRaw &&
-      "meta" in comparisonPropertiesRaw
-    ) {
-      const unwrapped = (comparisonPropertiesRaw as any).json;
+    const isSuperjsonEnvelope = (
+      value: unknown
+    ): value is { json: unknown; meta: unknown } =>
+      typeof value === "object" &&
+      value !== null &&
+      "json" in value &&
+      "meta" in value;
+
+    if (isSuperjsonEnvelope(comparisonPropertiesRaw)) {
+      const unwrapped = comparisonPropertiesRaw.json;
       return Array.isArray(unwrapped) ? unwrapped : [];
     }
     return Array.isArray(comparisonPropertiesRaw)
@@ -45,14 +45,14 @@ export default function Header() {
   const displayName = user?.name || user?.email || "Account";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link
           href="/"
           className="flex items-center gap-2 font-semibold text-xl text-foreground hover:opacity-80 transition-opacity"
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-accent to-accent/80 flex items-center justify-center">
             <span className="text-white font-bold">RE</span>
           </div>
           <span className="hidden sm:inline">RealEstate</span>
