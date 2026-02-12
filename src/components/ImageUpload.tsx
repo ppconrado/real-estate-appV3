@@ -15,7 +15,9 @@ export default function ImageUpload({
   maxFiles = 10,
 }: ImageUploadProps) {
   const [dragActive, setDragActive] = useState(false);
-  const [previews, setPreviews] = useState<Array<{ file: File; preview: string; caption: string }>>([]);
+  const [previews, setPreviews] = useState<
+    Array<{ file: File; preview: string; caption: string }>
+  >([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDrag = (e: React.DragEvent) => {
@@ -33,7 +35,7 @@ export default function ImageUpload({
     e.stopPropagation();
     setDragActive(false);
 
-    const files = Array.from(e.dataTransfer.files).filter((file) =>
+    const files = Array.from(e.dataTransfer.files).filter(file =>
       file.type.startsWith("image/")
     );
 
@@ -51,7 +53,7 @@ export default function ImageUpload({
       return;
     }
 
-    const newPreviews = newFiles.map((file) => ({
+    const newPreviews = newFiles.map(file => ({
       file,
       preview: URL.createObjectURL(file),
       caption: "",
@@ -61,7 +63,7 @@ export default function ImageUpload({
   };
 
   const removePreview = (index: number) => {
-    setPreviews((prev) => {
+    setPreviews(prev => {
       const updated = [...prev];
       URL.revokeObjectURL(updated[index].preview);
       updated.splice(index, 1);
@@ -70,7 +72,7 @@ export default function ImageUpload({
   };
 
   const updateCaption = (index: number, caption: string) => {
-    setPreviews((prev) => {
+    setPreviews(prev => {
       const updated = [...prev];
       updated[index].caption = caption;
       return updated;
@@ -80,7 +82,7 @@ export default function ImageUpload({
   const handleSubmit = () => {
     if (previews.length === 0) return;
 
-    const filesToUpload = previews.map((p) => ({
+    const filesToUpload = previews.map(p => ({
       file: p.file,
       caption: p.caption || undefined,
     }));
@@ -118,14 +120,14 @@ export default function ImageUpload({
           </div>
           <div>
             <p className="font-semibold text-foreground">
-              Drag and drop images here
+              Arraste e solte suas imagens aqui
             </p>
             <p className="text-sm text-muted-foreground">
-              or click to select files
+              ou clique para selecionar do seu dispositivo
             </p>
           </div>
           <p className="text-xs text-muted-foreground">
-            PNG, JPG, GIF up to 10MB each
+            PNG, JPG, GIF até 10MB cada
           </p>
         </div>
 
@@ -169,7 +171,7 @@ export default function ImageUpload({
                     type="text"
                     placeholder="Caption (optional)"
                     value={item.caption}
-                    onChange={(e) => updateCaption(index, e.target.value)}
+                    onChange={e => updateCaption(index, e.target.value)}
                     className="w-full text-xs px-2 py-1 rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent"
                   />
                 </div>
@@ -185,17 +187,19 @@ export default function ImageUpload({
               className="flex-1 bg-accent hover:bg-accent/90 gap-2"
             >
               <ImageIcon className="w-4 h-4" />
-              {isLoading ? "Uploading..." : `Upload ${previews.length} Image${previews.length !== 1 ? "s" : ""}`}
+              {isLoading
+                ? "Uploading..."
+                : `Upload ${previews.length} Image${previews.length !== 1 ? "s" : ""}`}
             </Button>
             <Button
               onClick={() => {
-                previews.forEach((p) => URL.revokeObjectURL(p.preview));
+                previews.forEach(p => URL.revokeObjectURL(p.preview));
                 setPreviews([]);
               }}
               variant="outline"
               disabled={isLoading}
             >
-              Clear All
+              Limpar tudo
             </Button>
           </div>
         </div>
