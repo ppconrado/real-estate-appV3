@@ -78,10 +78,12 @@ export default function Profile() {
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center space-y-6">
-            <h1 className="text-3xl font-bold">Sign In to View Your Profile</h1>
+            <h1 className="text-3xl font-bold">
+              Faça login para ver seu perfil
+            </h1>
             <p className="text-muted-foreground max-w-md">
-              Access your saved searches, favorites, and account details by
-              signing in.
+              Acesse suas pesquisas salvas, favoritos e detalhes da conta
+              fazendo login.
             </p>
             <Button
               size="lg"
@@ -89,7 +91,7 @@ export default function Profile() {
               className="bg-accent hover:bg-accent/90"
               disabled={!loginUrl}
             >
-              <a href={loginUrl || "#"}>Sign In</a>
+              <a href={loginUrl || "#"}>Entrar</a>
             </Button>
           </div>
         </div>
@@ -104,9 +106,9 @@ export default function Profile() {
       {/* Page Header */}
       <section className="border-b border-border bg-card/50 py-8">
         <div className="container">
-          <h1 className="text-4xl font-bold mb-2">Profile</h1>
+          <h1 className="text-4xl font-bold mb-2">Perfil</h1>
           <p className="text-muted-foreground">
-            Manage your account and saved items
+            Gerencie sua conta e itens salvos
           </p>
         </div>
       </section>
@@ -115,86 +117,88 @@ export default function Profile() {
         <div className="container grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="p-6 space-y-4">
             <div>
-              <h2 className="text-xl font-semibold">Account Details</h2>
+              <h2 className="text-xl font-semibold">Detalhes da Conta</h2>
               <p className="text-muted-foreground text-sm">
-                Your current profile information
+                Suas informações de perfil atuais
               </p>
             </div>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Name</span>
+                <span className="text-muted-foreground">Nome</span>
                 <span className="font-medium">
-                  {user?.name || "Not provided"}
+                  {user?.name || "Não fornecido"}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Email</span>
                 <span className="font-medium">
-                  {user?.email || "Not provided"}
+                  {user?.email || "Não fornecido"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Role</span>
+                <span className="text-muted-foreground">Função</span>
                 <span className="font-medium capitalize">
-                  {user?.role || "user"}
+                  {user?.role || "usuário"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Last Sign In</span>
+                <span className="text-muted-foreground">Último Acesso</span>
                 <span className="font-medium">
                   {user?.lastSignedIn
                     ? new Date(user.lastSignedIn).toLocaleDateString()
-                    : "Unknown"}
+                    : "Desconhecido"}
                 </span>
               </div>
             </div>
             <Button variant="outline" onClick={() => logout()}>
-              Sign Out
+              Sair
             </Button>
           </Card>
 
           <Card className="p-6 space-y-4">
             <div>
-              <h2 className="text-xl font-semibold">Saved Items</h2>
+              <h2 className="text-xl font-semibold">Itens Salvos</h2>
               <p className="text-muted-foreground text-sm">
-                Quick access to your favorites
+                Acesso rápido aos seus favoritos
               </p>
             </div>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Favorites</span>
+                <span className="text-muted-foreground">Favoritos</span>
                 <span className="font-medium">{favorites.length}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Saved Searches</span>
+                <span className="text-muted-foreground">Pesquisas Salvas</span>
                 <span className="font-medium">{savedSearches.length}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Comparison List</span>
+                <span className="text-muted-foreground">
+                  Lista de Comparação
+                </span>
                 <span className="font-medium">{comparison.length}</span>
               </div>
             </div>
             <div className="flex flex-col gap-2">
               <Button asChild className="bg-accent hover:bg-accent/90">
-                <Link href="/favorites">View Favorites</Link>
+                <Link href="/favorites">Ver Favoritos</Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/properties">Browse Properties</Link>
+                <Link href="/properties">Explorar Propriedades</Link>
               </Button>
             </div>
           </Card>
 
           <Card className="p-6 space-y-4">
             <div>
-              <h2 className="text-xl font-semibold">Account Tips</h2>
+              <h2 className="text-xl font-semibold">Dicas da Conta</h2>
               <p className="text-muted-foreground text-sm">
-                Get the most out of your account
+                Aproveite ao máximo sua conta
               </p>
             </div>
             <ul className="text-sm text-muted-foreground space-y-2">
-              <li>Save your favorite listings for quick access.</li>
-              <li>Use saved searches to track new inventory.</li>
-              <li>Compare properties side-by-side before deciding.</li>
+              <li>Salve seus anúncios favoritos para acesso rápido.</li>
+              <li>Use pesquisas salvas para acompanhar novos imóveis.</li>
+              <li>Compare propriedades lado a lado antes de decidir.</li>
             </ul>
           </Card>
         </div>
@@ -202,7 +206,7 @@ export default function Profile() {
 
       <footer className="border-t border-border bg-card/50 py-8 mt-auto">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 RealEstate. All rights reserved.</p>
+          <p>&copy; 2026 SaborRifaina. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
