@@ -3,31 +3,53 @@
 ## Prerequisites
 
 - Node.js and pnpm installed.
-- A MySQL-compatible database reachable by the app.
+- A Postgres database (Neon recommended for production).
+
+## Target Platform
+
+- App hosting: Vercel
+- Database: Neon Postgres
 
 ## Environment Variables
 
-Set these in your hosting environment (examples only):
+Set these in your hosting environment (examples only). Use Vercel project settings for production.
 
-Server:
+Server
 
-- DATABASE_URL=your-mysql-connection-string
+- DATABASE_URL=your-postgres-connection-string
 - JWT_SECRET=your-cookie-secret
-- OAUTH_SERVER_URL=https://your-oauth-server
+- GOOGLE_CLIENT_ID=your-google-client-id
+- GOOGLE_CLIENT_SECRET=your-google-client-secret
+- NEXT_PUBLIC_APP_ID=your-oauth-app-id
 - OWNER_OPEN_ID=your-admin-openid
-- VITE_APP_ID=your-oauth-app-id
-- BUILT_IN_FORGE_API_URL=https://forge.butterfly-effect.dev
-- BUILT_IN_FORGE_API_KEY=your-forge-key
+- OAUTH_SERVER_URL=https://your-oauth-server (optional)
+- NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your-mapbox-token
 
-Client:
+Storage (choose one)
 
-- VITE_FRONTEND_FORGE_API_URL=https://forge.butterfly-effect.dev
-- VITE_FRONTEND_FORGE_API_KEY=your-frontend-forge-key
+- Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_FOLDER (optional)
+- Storage proxy: BUILT_IN_FORGE_API_URL, BUILT_IN_FORGE_API_KEY
+
+## Neon Setup
+
+1. Create a Neon Postgres project and database.
+2. Copy the connection string into `DATABASE_URL` on Vercel.
+3. Use the pooled connection string if available.
+
+## Vercel Deployment
+
+1. Push the repo to GitHub.
+2. Import the project in Vercel.
+3. Set all environment variables listed above.
+4. Deploy.
+
+If you need to run migrations and seed, use Vercel preview or a CI step (see below).
 
 ## Build
 
 - Install dependencies: `pnpm install`
-- Run migrations: `pnpm db:push`
+- Run migrations: `pnpm db:migrate`
+- Optional seed: `pnpm db:seed`
 - Build: `pnpm build`
 
 ## Run (Production)
@@ -38,3 +60,4 @@ Client:
 
 - The admin user is assigned by `OWNER_OPEN_ID`.
 - Ensure the database is reachable before starting the server.
+- For Vercel, prefer running migrations in CI or locally before deployment.
