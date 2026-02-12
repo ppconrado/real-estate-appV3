@@ -852,7 +852,7 @@ export default function AdminDashboard() {
                                     className="relative group rounded-lg overflow-hidden border border-border"
                                   >
                                     <div className="aspect-square bg-muted flex items-center justify-center">
-                                      <image
+                                      <img
                                         src={image.imageUrl}
                                         alt={
                                           image.caption ||
