@@ -180,10 +180,11 @@ export default function ViewingsDashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Viewing Appointments Dashboard
+            Painel de Consultas de Visualização
           </h1>
           <p className="text-slate-600">
-            Manage and track all property viewing appointments
+            Gerencie e acompanhe todas as consultas de visualização de
+            propriedades
           </p>
         </div>
 
@@ -191,7 +192,7 @@ export default function ViewingsDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-4">
             <div className="text-sm font-medium text-slate-600 mb-1">
-              Total Viewings
+              Total de Consultas
             </div>
             <div className="text-2xl font-bold text-slate-900">
               {stats.total}
@@ -199,7 +200,7 @@ export default function ViewingsDashboard() {
           </Card>
           <Card className="p-4 border-yellow-200">
             <div className="text-sm font-medium text-yellow-700 mb-1">
-              Scheduled
+              Agendadas
             </div>
             <div className="text-2xl font-bold text-yellow-900">
               {stats.scheduled}
@@ -207,7 +208,7 @@ export default function ViewingsDashboard() {
           </Card>
           <Card className="p-4 border-green-200">
             <div className="text-sm font-medium text-green-700 mb-1">
-              Confirmed
+              Confirmadas
             </div>
             <div className="text-2xl font-bold text-green-900">
               {stats.confirmed}
@@ -215,7 +216,7 @@ export default function ViewingsDashboard() {
           </Card>
           <Card className="p-4 border-blue-200">
             <div className="text-sm font-medium text-blue-700 mb-1">
-              Completed
+              Concluídas
             </div>
             <div className="text-2xl font-bold text-blue-900">
               {stats.completed}
@@ -223,7 +224,7 @@ export default function ViewingsDashboard() {
           </Card>
           <Card className="p-4 border-red-200">
             <div className="text-sm font-medium text-red-700 mb-1">
-              Cancelled
+              Canceladas
             </div>
             <div className="text-2xl font-bold text-red-900">
               {stats.cancelled}
@@ -235,7 +236,7 @@ export default function ViewingsDashboard() {
         <Card className="p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Filter className="w-5 h-5 text-slate-600" />
-            <h2 className="text-lg font-semibold text-slate-900">Filters</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Filtros</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -243,7 +244,7 @@ export default function ViewingsDashboard() {
             <div className="relative">
               <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
               <Input
-                placeholder="Search by name, email, phone..."
+                placeholder="Pesquisar por nome, email, telefone..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -256,11 +257,11 @@ export default function ViewingsDashboard() {
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="scheduled">Scheduled</SelectItem>
-                <SelectItem value="confirmed">Confirmed</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="all">Todos os Status</SelectItem>
+                <SelectItem value="scheduled">Agendadas</SelectItem>
+                <SelectItem value="confirmed">Confirmadas</SelectItem>
+                <SelectItem value="completed">Concluídas</SelectItem>
+                <SelectItem value="canceled">Cancelada</SelectItem>
               </SelectContent>
             </Select>
 
@@ -291,7 +292,7 @@ export default function ViewingsDashboard() {
           <Card className="p-4 mb-6 bg-blue-50 border-blue-200">
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium text-blue-900">
-                {selectedViewings.length} viewing(s) selected
+                {selectedViewings.length} Visita(s) selecionada(s)
               </div>
               <div className="flex items-center gap-2">
                 <Select value={bulkAction as any} onValueChange={setBulkAction}>
@@ -299,9 +300,15 @@ export default function ViewingsDashboard() {
                     <SelectValue placeholder="Select action..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="confirmed">Mark Confirmed</SelectItem>
-                    <SelectItem value="completed">Mark Completed</SelectItem>
-                    <SelectItem value="cancelled">Mark Cancelled</SelectItem>
+                    <SelectItem value="confirmed">
+                      Marcar como Confirmada
+                    </SelectItem>
+                    <SelectItem value="completed">
+                      Marcar como Concluída
+                    </SelectItem>
+                    <SelectItem value="cancelled">
+                      Marcar como Cancelada
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <Button
@@ -309,7 +316,7 @@ export default function ViewingsDashboard() {
                   disabled={!bulkAction || bulkUpdateMutation.isPending}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  Apply
+                  Aplicar
                 </Button>
               </div>
             </div>
@@ -334,22 +341,22 @@ export default function ViewingsDashboard() {
                     />
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
-                    Visitor
+                    Visitante
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
-                    Date & Time
+                    Data & Hora
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
-                    Duration
+                    Duração
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
-                    Contact
+                    Contato
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
-                    Actions
+                    Ações
                   </th>
                 </tr>
               </thead>
@@ -357,13 +364,17 @@ export default function ViewingsDashboard() {
                 {isLoading ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-8 text-center">
-                      <div className="text-slate-500">Loading viewings...</div>
+                      <div className="text-slate-500">
+                        Carregando consultas...
+                      </div>
                     </td>
                   </tr>
                 ) : viewings.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-8 text-center">
-                      <div className="text-slate-500">No viewings found</div>
+                      <div className="text-slate-500">
+                        Nenhuma consulta encontrada.
+                      </div>
                     </td>
                   </tr>
                 ) : (
@@ -415,10 +426,12 @@ export default function ViewingsDashboard() {
                             </Badge>
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="scheduled">Scheduled</SelectItem>
-                            <SelectItem value="confirmed">Confirmed</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                            <SelectItem value="scheduled">Agendada</SelectItem>
+                            <SelectItem value="confirmed">
+                              Confirmada
+                            </SelectItem>
+                            <SelectItem value="completed">Concluída</SelectItem>
+                            <SelectItem value="cancelled">Cancelada</SelectItem>
                           </SelectContent>
                         </Select>
                       </td>
@@ -498,7 +511,7 @@ export default function ViewingsDashboard() {
             }}
           >
             <Download className="w-4 h-4" />
-            Export to CSV
+            Exportar para CSV
           </Button>
         </div>
       </div>
