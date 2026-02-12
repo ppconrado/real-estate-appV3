@@ -87,10 +87,10 @@ export default function InquiriesDashboard() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Property Inquiries Dashboard
+            Painel de Consultas de Propriedades
           </h1>
           <p className="text-slate-600">
-            Track and manage incoming property inquiries
+            Acompanhe e gerencie as consultas de propriedades recebidas
           </p>
         </div>
 
@@ -102,14 +102,16 @@ export default function InquiriesDashboard() {
             </div>
           </Card>
           <Card className="p-4 border-yellow-200">
-            <div className="text-sm font-medium text-yellow-700 mb-1">New</div>
+            <div className="text-sm font-medium text-yellow-700 mb-1">
+              Novas
+            </div>
             <div className="text-2xl font-bold text-yellow-900">
               {stats.new}
             </div>
           </Card>
           <Card className="p-4 border-blue-200">
             <div className="text-sm font-medium text-blue-700 mb-1">
-              Contacted
+              Contatadas
             </div>
             <div className="text-2xl font-bold text-blue-900">
               {stats.contacted}
@@ -117,7 +119,7 @@ export default function InquiriesDashboard() {
           </Card>
           <Card className="p-4 border-green-200">
             <div className="text-sm font-medium text-green-700 mb-1">
-              Closed
+              Fechadas
             </div>
             <div className="text-2xl font-bold text-green-900">
               {stats.closed}
@@ -141,10 +143,10 @@ export default function InquiriesDashboard() {
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="new">New</SelectItem>
-                <SelectItem value="contacted">Contacted</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
+                <SelectItem value="all">Todos os Status</SelectItem>
+                <SelectItem value="new">Novas</SelectItem>
+                <SelectItem value="contacted">Contatadas</SelectItem>
+                <SelectItem value="closed">Fechadas</SelectItem>
               </SelectContent>
             </Select>
             <Button
@@ -154,7 +156,7 @@ export default function InquiriesDashboard() {
                 setStatusFilter("all");
               }}
             >
-              Reset Filters
+              Resetar Filtros
             </Button>
           </div>
         </Card>
@@ -162,11 +164,11 @@ export default function InquiriesDashboard() {
         <Card className="p-6">
           {isLoading ? (
             <div className="text-center py-12 text-slate-500">
-              Loading inquiries...
+              Carregando consultas...
             </div>
           ) : inquiries.length === 0 ? (
             <div className="text-center py-12 text-slate-500">
-              No inquiries found.
+              Nenhuma consulta encontrada.
             </div>
           ) : (
             <div className="space-y-4">
@@ -201,7 +203,7 @@ export default function InquiriesDashboard() {
                         </p>
                       )}
                       <p className="text-xs text-slate-500">
-                        Submitted {formatDate(inquiry.createdAt)}
+                        Enviado {formatDate(inquiry.createdAt)}
                       </p>
                     </div>
 
@@ -222,9 +224,9 @@ export default function InquiriesDashboard() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="new">New</SelectItem>
-                          <SelectItem value="contacted">Contacted</SelectItem>
-                          <SelectItem value="closed">Closed</SelectItem>
+                          <SelectItem value="new">Novas</SelectItem>
+                          <SelectItem value="contacted">Contatadas</SelectItem>
+                          <SelectItem value="closed">Fechadas</SelectItem>
                         </SelectContent>
                       </Select>
                       <Button
@@ -237,7 +239,7 @@ export default function InquiriesDashboard() {
                         }}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
+                        Deletar
                       </Button>
                     </div>
                   </div>
