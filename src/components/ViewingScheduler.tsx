@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +19,10 @@ interface ViewingSchedulerProps {
   propertyTitle: string;
 }
 
-export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingSchedulerProps) {
+export default function ViewingScheduler({
+  propertyId,
+  propertyTitle,
+}: ViewingSchedulerProps) {
   const { user, isAuthenticated } = useAuth();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,7 +37,7 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
 
   const createViewingMutation = trpc.viewings.create.useMutation({
     onSuccess: () => {
-      toast.success("Viewing scheduled successfully!");
+      toast.success("Visita agendada com sucesso!");
       setOpen(false);
       setFormData({
         visitorName: user?.name || "",
@@ -41,22 +49,26 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
         notes: "",
       });
     },
-    onError: (error) => {
-      toast.error(error.message || "Failed to schedule viewing");
+    onError: error => {
+      toast.error(error.message || "Falha ao agendar a visita");
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.visitorName || !formData.visitorEmail || !formData.viewingDate) {
-      toast.error("Please fill in all required fields");
+    if (
+      !formData.visitorName ||
+      !formData.visitorEmail ||
+      !formData.viewingDate
+    ) {
+      toast.error("Por favor, preencha todos os campos obrigatórios");
       return;
     }
 
     const viewingDate = new Date(formData.viewingDate);
     if (viewingDate < new Date()) {
-      toast.error("Please select a future date");
+      toast.error("Por favor, selecione uma data futura");
       return;
     }
 
@@ -75,7 +87,7 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
   if (!isAuthenticated) {
     return (
       <Button disabled className="w-full">
-        Sign in to Schedule Viewing
+        Faça login para agendar uma visita
       </Button>
     );
   }
@@ -84,31 +96,31 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
     <>
       <Button onClick={() => setOpen(true)} className="w-full">
         <Calendar className="mr-2 h-4 w-4" />
-        Schedule Viewing
+        Agendar Visita
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Schedule Property Viewing</DialogTitle>
+            <DialogTitle>Agendar Visita à Propriedade</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-2">
-                Property: {propertyTitle}
+                Propriedade: {propertyTitle}
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name *</Label>
+              <Label htmlFor="name">Nome Completo *</Label>
               <Input
                 id="name"
                 value={formData.visitorName}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, visitorName: e.target.value })
                 }
-                placeholder="Your name"
+                placeholder="Seu nome"
                 required
               />
             </div>
@@ -119,35 +131,35 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
                 id="email"
                 type="email"
                 value={formData.visitorEmail}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, visitorEmail: e.target.value })
                 }
-                placeholder="your@email.com"
+                placeholder="seu@email.com"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">Número de Telefone</Label>
               <Input
                 id="phone"
                 type="tel"
                 value={formData.visitorPhone}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, visitorPhone: e.target.value })
                 }
-                placeholder="+1 (555) 000-0000"
+                placeholder="+00 (00) 00000-0000"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="date">Viewing Date *</Label>
+                <Label htmlFor="date">Data da Visita *</Label>
                 <Input
                   id="date"
                   type="date"
                   value={formData.viewingDate}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, viewingDate: e.target.value })
                   }
                   min={new Date().toISOString().split("T")[0]}
@@ -156,14 +168,14 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="time">Viewing Time *</Label>
+                <Label htmlFor="time">Hora da Visita *</Label>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <Input
                     id="time"
                     type="time"
                     value={formData.viewingTime}
-                    onChange={(e) =>
+                    onChange={e =>
                       setFormData({ ...formData, viewingTime: e.target.value })
                     }
                     required
@@ -173,32 +185,35 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="duration">Duration (minutes)</Label>
+              <Label htmlFor="duration">Duração (minutos)</Label>
               <select
                 id="duration"
                 value={formData.duration}
-                onChange={(e) =>
-                  setFormData({ ...formData, duration: parseInt(e.target.value) })
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    duration: parseInt(e.target.value),
+                  })
                 }
                 className="w-full px-3 py-2 border border-input rounded-md bg-background"
               >
-                <option value={30}>30 minutes</option>
-                <option value={45}>45 minutes</option>
-                <option value={60}>1 hour</option>
-                <option value={90}>1.5 hours</option>
-                <option value={120}>2 hours</option>
+                <option value={30}>30 minutos</option>
+                <option value={45}>45 minutos</option>
+                <option value={60}>1 hora</option>
+                <option value={90}>1,5 horas</option>
+                <option value={120}>2 horas</option>
               </select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="notes">Additional Notes</Label>
+              <Label htmlFor="notes">Notas Adicionais</Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, notes: e.target.value })
                 }
-                placeholder="Any special requests or questions?"
+                placeholder="Alguma solicitação ou pergunta especial?"
                 rows={3}
               />
             </div>
@@ -211,11 +226,10 @@ export default function ViewingScheduler({ propertyId, propertyTitle }: ViewingS
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={createViewingMutation.isPending}
-              >
-                {createViewingMutation.isPending ? "Scheduling..." : "Schedule Viewing"}
+              <Button type="submit" disabled={createViewingMutation.isPending}>
+                {createViewingMutation.isPending
+                  ? "Scheduling..."
+                  : "Schedule Viewing"}
               </Button>
             </div>
           </form>
