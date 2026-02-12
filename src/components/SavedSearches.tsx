@@ -48,7 +48,7 @@ export default function SavedSearches({
       <Button variant="outline" className="gap-2" asChild>
         <a href={loginUrl}>
           <Bookmark className="w-4 h-4" />
-          <span className="hidden sm:inline">Saved Searches</span>
+          <span className="hidden sm:inline">Salvar Pesquisas</span>
         </a>
       </Button>
     );
@@ -57,28 +57,28 @@ export default function SavedSearches({
   const createSavedSearch = trpc.savedSearches.create.useMutation({
     onSuccess: () => {
       utils.savedSearches.getAll.invalidate();
-      toast.success("Search saved successfully");
+      toast.success("Pesquisa salva com sucesso");
       setSearchName("");
       setShowSaveForm(false);
     },
     onError: error => {
-      toast.error(error.message || "Failed to save search");
+      toast.error(error.message || "Falha ao salvar a pesquisa");
     },
   });
 
   const deleteSavedSearch = trpc.savedSearches.delete.useMutation({
     onSuccess: () => {
       utils.savedSearches.getAll.invalidate();
-      toast.success("Search deleted");
+      toast.success("Pesquisa deletada com sucesso");
     },
     onError: error => {
-      toast.error(error.message || "Failed to delete search");
+      toast.error(error.message || "Falha ao deletar a pesquisa");
     },
   });
 
   const handleSaveSearch = () => {
     if (!searchName.trim()) {
-      toast.error("Please enter a search name");
+      toast.error("Por favor, insira um nome para a pesquisa");
       return;
     }
 
@@ -112,7 +112,7 @@ export default function SavedSearches({
     };
     onLoadSearch(filters);
     setOpen(false);
-    toast.success(`Loaded search: ${search.name}`);
+    toast.success(`Pesquisa carregada: ${search.name}`);
   };
 
   return (
@@ -164,7 +164,7 @@ export default function SavedSearches({
                   disabled={createSavedSearch.isPending}
                   className="flex-1 bg-accent hover:bg-accent/90"
                 >
-                  {createSavedSearch.isPending ? "Saving..." : "Save"}
+                  {createSavedSearch.isPending ? "Salvando..." : "Salvar"}
                 </Button>
                 <Button
                   variant="outline"
@@ -183,13 +183,13 @@ export default function SavedSearches({
           {/* Saved Searches List */}
           {isLoading ? (
             <div className="text-center py-8 text-muted-foreground">
-              Loading saved searches...
+              Carregando pesquisas salvas...
             </div>
           ) : savedSearchList.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               {showSaveForm
-                ? "Save your first search above"
-                : "No saved searches yet"}
+                ? "Salve sua primeira pesquisa acima"
+                : "Nenhuma pesquisa salva ainda"}
             </div>
           ) : (
             <div className="space-y-2">
@@ -215,12 +215,12 @@ export default function SavedSearches({
                       )}
                       {search.bedrooms && (
                         <span className="text-xs bg-muted px-2 py-1 rounded">
-                          {search.bedrooms}+ Beds
+                          {search.bedrooms}+ Quartos
                         </span>
                       )}
                       {search.bathrooms && (
                         <span className="text-xs bg-muted px-2 py-1 rounded">
-                          {search.bathrooms}+ Baths
+                          {search.bathrooms}+ Banheiros
                         </span>
                       )}
                       {search.propertyType && (
@@ -230,7 +230,7 @@ export default function SavedSearches({
                       )}
                       {search.amenities && search.amenities.length > 0 && (
                         <span className="text-xs bg-muted px-2 py-1 rounded">
-                          {search.amenities.length} amenities
+                          {search.amenities.length} comodidades
                         </span>
                       )}
                     </div>
@@ -242,7 +242,7 @@ export default function SavedSearches({
                       onClick={() => handleLoadSearch(search)}
                       className="bg-accent hover:bg-accent/90"
                     >
-                      Load
+                      Carregar
                     </Button>
                     <Button
                       variant="ghost"
