@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
@@ -27,13 +28,13 @@ function FeaturedPropertyImage({
   }
 
   return (
-    <div className="w-full h-48 bg-muted overflow-hidden">
-      <img
+    <div className="w-full h-48 bg-muted overflow-hidden relative">
+      <Image
         src={imageUrl}
         alt={title}
-        className="h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
+        fill
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
     </div>
   );
@@ -77,11 +78,13 @@ export default function Home() {
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
-              Find Your <span className="text-accent">Perfect Home</span>
+              Encontre sua Propriedade{" "}
+              <span className="text-accent">dos Sonhos</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Discover exceptional properties in prime locations. Browse our
-              curated collection of residential and commercial real estate.
+              Descubra propriedades excepcionais em locais privilegiados.
+              Explore nossa coleção selecionada de imóveis residenciais e para
+              seu lazer.
             </p>
 
             {/* Search Bar */}
@@ -90,12 +93,12 @@ export default function Home() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Search by location, property type..."
+                  placeholder="Explore por localização, tipo de propriedade..."
                   className="w-full pl-12 pr-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
               <Button size="lg" className="bg-accent hover:bg-accent/90">
-                Search
+                Explore
               </Button>
             </div>
 
@@ -106,10 +109,10 @@ export default function Home() {
                 asChild
                 className="bg-accent hover:bg-accent/90"
               >
-                <Link href="/properties">Browse All Properties</Link>
+                <Link href="/properties">Explore Todas as Propriedades</Link>
               </Button>
               <Button size="lg" variant="outline">
-                Learn More
+                Saiba Mais
               </Button>
             </div>
           </div>
@@ -124,9 +127,11 @@ export default function Home() {
               <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mx-auto">
                 <MapPin className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="text-lg font-semibold">Prime Locations</h3>
+              <h3 className="text-lg font-semibold">
+                Localizações Privilegiadas
+              </h3>
               <p className="text-muted-foreground">
-                Properties in the most desirable neighborhoods and areas
+                Propriedades nos bairros e áreas mais desejáveis
               </p>
             </div>
 
@@ -134,9 +139,9 @@ export default function Home() {
               <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mx-auto">
                 <TrendingUp className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="text-lg font-semibold">Best Value</h3>
+              <h3 className="text-lg font-semibold">Melhor Valor</h3>
               <p className="text-muted-foreground">
-                Competitive pricing with transparent market analysis
+                Preços competitivos com análise de mercado transparente
               </p>
             </div>
 
@@ -144,9 +149,10 @@ export default function Home() {
               <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mx-auto">
                 <Award className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="text-lg font-semibold">Expert Support</h3>
+              <h3 className="text-lg font-semibold">Suporte Especializado</h3>
               <p className="text-muted-foreground">
-                Professional guidance throughout your property journey
+                Orientação profissional ao longo de toda a sua jornada
+                imobiliária
               </p>
             </div>
           </div>
@@ -158,9 +164,9 @@ export default function Home() {
         <div className="container">
           <div className="space-y-12">
             <div className="text-center space-y-3">
-              <h2 className="text-4xl font-bold">Featured Properties</h2>
+              <h2 className="text-4xl font-bold">Propriedades em Destaque</h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Handpicked selections from our premium collection
+                Seleções cuidadosamente escolhidas da nossa coleção premium
               </p>
             </div>
 
@@ -197,13 +203,13 @@ export default function Home() {
                         <div className="grid grid-cols-3 gap-3 mb-4 py-4 border-t border-b border-border">
                           <div className="text-center">
                             <p className="text-sm text-muted-foreground">
-                              Beds
+                              Quartos
                             </p>
                             <p className="font-semibold">{property.bedrooms}</p>
                           </div>
                           <div className="text-center">
                             <p className="text-sm text-muted-foreground">
-                              Baths
+                              Banheiros
                             </p>
                             <p className="font-semibold">
                               {property.bathrooms}
@@ -211,7 +217,7 @@ export default function Home() {
                           </div>
                           <div className="text-center">
                             <p className="text-sm text-muted-foreground">
-                              Sqft
+                              metros²
                             </p>
                             <p className="font-semibold">
                               {property.squareFeet?.toLocaleString()}
@@ -224,7 +230,7 @@ export default function Home() {
                             ${Number(property.price).toLocaleString()}
                           </p>
                           <Button className="w-full bg-accent hover:bg-accent/90">
-                            View Details
+                            Ver Detalhes
                           </Button>
                         </div>
                       </div>
@@ -236,7 +242,7 @@ export default function Home() {
 
             <div className="text-center">
               <Button size="lg" variant="outline" asChild>
-                <Link href="/properties">View All Properties</Link>
+                <Link href="/properties">Explore Todas as Propriedades</Link>
               </Button>
             </div>
           </div>
@@ -248,11 +254,11 @@ export default function Home() {
         <div className="container">
           <div className="max-w-3xl mx-auto text-center space-y-6 bg-card rounded-lg p-8 md:p-12 border border-border">
             <h2 className="text-3xl md:text-4xl font-bold">
-              Ready to Find Your Dream Property?
+              Pronto para Encontrar Sua Propriedade dos Sonhos?
             </h2>
             <p className="text-muted-foreground text-lg">
-              Start your real estate journey today with our comprehensive
-              property listings and expert guidance.
+              Comece sua jornada imobiliária hoje com nossas listas de
+              propriedades abrangentes e orientação especializada.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -260,10 +266,10 @@ export default function Home() {
                 className="bg-accent hover:bg-accent/90"
                 asChild
               >
-                <Link href="/properties">Browse Properties</Link>
+                <Link href="/properties">Explore Propriedades</Link>
               </Button>
               <Button size="lg" variant="outline">
-                Contact Us
+                Contacte um Agente
               </Button>
             </div>
           </div>
@@ -275,14 +281,14 @@ export default function Home() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h4 className="font-semibold mb-4">About</h4>
+              <h4 className="font-semibold mb-4">Sobre</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    About Us
+                    Sobre Nós
                   </a>
                 </li>
                 <li>
@@ -298,20 +304,20 @@ export default function Home() {
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    Careers
+                    Carreiras
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Properties</h4>
+              <h4 className="font-semibold mb-4">Propriedades</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    For Sale
+                    À Venda
                   </a>
                 </li>
                 <li>
@@ -319,7 +325,7 @@ export default function Home() {
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    For Rent
+                    Para Alugar
                   </a>
                 </li>
                 <li>
@@ -327,20 +333,20 @@ export default function Home() {
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    New Listings
+                    Novas Listagens
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
+              <h4 className="font-semibold mb-4">Suporte</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    Help Center
+                    Central de Ajuda
                   </a>
                 </li>
                 <li>
@@ -348,7 +354,7 @@ export default function Home() {
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    Contact
+                    Contato
                   </a>
                 </li>
                 <li>
@@ -369,7 +375,7 @@ export default function Home() {
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    Privacy
+                    Privacidade
                   </a>
                 </li>
                 <li>
@@ -377,7 +383,7 @@ export default function Home() {
                     href="#"
                     className="hover:text-foreground transition-colors"
                   >
-                    Terms
+                    Termos
                   </a>
                 </li>
                 <li>
@@ -392,7 +398,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2026 RealEstate. All rights reserved.</p>
+            <p>&copy; 2026 SaborRifaina. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
