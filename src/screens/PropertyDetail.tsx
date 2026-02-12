@@ -100,7 +100,7 @@ export default function PropertyDetail() {
 
   const submitInquiry = trpc.inquiries.submit.useMutation({
     onSuccess: () => {
-      toast.success("Inquiry sent successfully");
+      toast.success("Consulta enviada com sucesso!");
       setInquiryOpen(false);
       setInquiryForm({
         name: user?.name || "",
@@ -110,7 +110,7 @@ export default function PropertyDetail() {
       });
     },
     onError: error => {
-      toast.error(error.message || "Failed to send inquiry");
+      toast.error(error.message || "Falha ao enviar a consulta");
     },
   });
 
@@ -173,7 +173,9 @@ export default function PropertyDetail() {
             />
           ) : (
             <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center">
-              <p className="text-muted-foreground">Property not found</p>
+              <p className="text-muted-foreground">
+                Propriedade não encontrada
+              </p>
             </div>
           )}
         </div>
@@ -190,7 +192,9 @@ export default function PropertyDetail() {
             </div>
           ) : !resolvedProperty ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Property not found.</p>
+              <p className="text-muted-foreground">
+                Propriedade não encontrada.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -238,7 +242,7 @@ export default function PropertyDetail() {
                           {resolvedProperty.bedrooms}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">Bedrooms</p>
+                      <p className="text-sm text-muted-foreground">Quartos</p>
                     </Card>
                     <Card className="p-4 text-center">
                       <div className="flex items-center justify-center gap-2 mb-2">
@@ -247,18 +251,20 @@ export default function PropertyDetail() {
                           {resolvedProperty.bathrooms}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">Bathrooms</p>
+                      <p className="text-sm text-muted-foreground">Banheiros</p>
                     </Card>
                     <Card className="p-4 text-center">
                       <div className="flex items-center justify-center gap-2 mb-2">
                         <Ruler className="w-5 h-5 text-accent" />
                         <span className="text-2xl font-bold">
                           {resolvedProperty.squareFeet
-                            ? `${resolvedProperty.squareFeet} sqft`
+                            ? `${resolvedProperty.squareFeet} metros²`
                             : "N/A"}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">Sqft</p>
+                      <p className="text-sm text-muted-foreground">
+                        metros quadrados
+                      </p>
                     </Card>
                     <Card className="p-4 text-center">
                       <div className="flex items-center justify-center gap-2 mb-2">
@@ -274,16 +280,17 @@ export default function PropertyDetail() {
                 {/* Description */}
                 <div>
                   <h2 className="text-2xl font-bold mb-4">
-                    About This Property
+                    Sobre Esta Propriedade
                   </h2>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    {resolvedProperty.description || "No description provided."}
+                    {resolvedProperty.description ||
+                      "Nenhuma descrição fornecida."}
                   </p>
                 </div>
 
                 {/* Amenities */}
                 <div>
-                  <h2 className="text-2xl font-bold mb-4">Amenities</h2>
+                  <h2 className="text-2xl font-bold mb-4">Comodidades</h2>
                   {Array.isArray(resolvedProperty.amenities) &&
                   resolvedProperty.amenities.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -301,14 +308,14 @@ export default function PropertyDetail() {
                     </div>
                   ) : (
                     <p className="text-muted-foreground">
-                      No amenities listed.
+                      Nenhuma comodidade listada.
                     </p>
                   )}
                 </div>
 
                 {/* Map */}
                 <div>
-                  <h2 className="text-2xl font-bold mb-4">Location</h2>
+                  <h2 className="text-2xl font-bold mb-4">Localização</h2>
                   {propertyCoordinates ? (
                     <div className="w-full h-96 rounded-lg overflow-hidden border border-border">
                       <MapView
@@ -325,7 +332,7 @@ export default function PropertyDetail() {
                       <div className="text-center">
                         <MapPin className="w-12 h-12 text-accent/50 mx-auto mb-2" />
                         <p className="text-muted-foreground">
-                          Map location unavailable
+                          Localização indisponível
                         </p>
                       </div>
                     </div>
@@ -338,7 +345,7 @@ export default function PropertyDetail() {
                 {/* Contact Card */}
                 <Card className="p-6 space-y-4 sticky top-20">
                   <h3 className="text-xl font-bold">
-                    Interested in This Property?
+                    Interessado nesta propriedade?
                   </h3>
 
                   <ViewingScheduler
@@ -351,18 +358,20 @@ export default function PropertyDetail() {
                     onClick={() => setInquiryOpen(true)}
                   >
                     <Mail className="w-4 h-4 mr-2" />
-                    Send Inquiry
+                    Enviar Consulta
                   </Button>
 
                   <div className="border-t border-border pt-4">
-                    <h4 className="font-semibold mb-3">Agent Information</h4>
+                    <h4 className="font-semibold mb-3">
+                      Informações do Corretor
+                    </h4>
                     <div className="space-y-2 text-sm">
                       <p className="text-muted-foreground">
                         <span className="font-medium text-foreground">
                           John Smith
                         </span>
                         <br />
-                        Real Estate Agent
+                        Corretor de Imóveis
                       </p>
                       <p className="text-muted-foreground">
                         <Phone className="w-4 h-4 inline mr-2" />
@@ -370,7 +379,7 @@ export default function PropertyDetail() {
                       </p>
                       <p className="text-muted-foreground">
                         <Mail className="w-4 h-4 inline mr-2" />
-                        john@realestate.com
+                        john@saborrifaina.com
                       </p>
                     </div>
                   </div>
@@ -378,27 +387,33 @@ export default function PropertyDetail() {
 
                 {/* Property Stats */}
                 <Card className="p-6 space-y-4">
-                  <h3 className="font-bold">Property Details</h3>
+                  <h3 className="font-bold">Detalhes da Propriedade</h3>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">
-                        Property Type
+                        Tipo de Propriedade
                       </span>
                       <span className="font-medium capitalize">
                         {resolvedProperty.propertyType}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Year Built</span>
+                      <span className="text-muted-foreground">
+                        Ano de Construção
+                      </span>
                       <span className="font-medium">2020</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Lot Size</span>
-                      <span className="font-medium">0.75 acres</span>
+                      <span className="text-muted-foreground">
+                        Tamanho do Lote
+                      </span>
+                      <span className="font-medium">0.75 hectares</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">HOA Fees</span>
-                      <span className="font-medium">$500/month</span>
+                      <span className="text-muted-foreground">
+                        Taxas de HOA
+                      </span>
+                      <span className="font-medium">$500/mês</span>
                     </div>
                   </div>
                 </Card>
@@ -411,7 +426,7 @@ export default function PropertyDetail() {
       <Dialog open={inquiryOpen} onOpenChange={setInquiryOpen}>
         <DialogContent className="sm:max-w-[520px]">
           <DialogHeader>
-            <DialogTitle>Send Property Inquiry</DialogTitle>
+            <DialogTitle>Enviar Consulta de Propriedade</DialogTitle>
           </DialogHeader>
           <form
             onSubmit={e => {
@@ -421,7 +436,7 @@ export default function PropertyDetail() {
                 !inquiryForm.email ||
                 !inquiryForm.message
               ) {
-                toast.error("Please fill in all required fields");
+                toast.error("Por favor, preencha todos os campos obrigatórios");
                 return;
               }
               submitInquiry.mutate({
@@ -458,7 +473,7 @@ export default function PropertyDetail() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="inquiry-phone">Phone</Label>
+              <Label htmlFor="inquiry-phone">Telefone</Label>
               <Input
                 id="inquiry-phone"
                 value={inquiryForm.phone}
@@ -468,7 +483,7 @@ export default function PropertyDetail() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="inquiry-message">Message *</Label>
+              <Label htmlFor="inquiry-message">Mensagem *</Label>
               <Textarea
                 id="inquiry-message"
                 value={inquiryForm.message}
@@ -485,10 +500,10 @@ export default function PropertyDetail() {
                 variant="outline"
                 onClick={() => setInquiryOpen(false)}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button type="submit" disabled={submitInquiry.isPending}>
-                {submitInquiry.isPending ? "Sending..." : "Send Inquiry"}
+                {submitInquiry.isPending ? "Enviando..." : "Enviar Consulta"}
               </Button>
             </div>
           </form>
@@ -498,7 +513,7 @@ export default function PropertyDetail() {
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-8 mt-auto">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 RealEstate. All rights reserved.</p>
+          <p>&copy; 2026 SaborRifaina. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
