@@ -59,9 +59,9 @@ export default function Header() {
           className="flex items-center gap-2 font-semibold text-xl text-foreground hover:opacity-80 transition-opacity"
         >
           <div className="w-8 h-8 rounded-lg bg-linear-to-br from-accent to-accent/80 flex items-center justify-center">
-            <span className="text-white font-bold">RE</span>
+            <span className="text-white font-bold">SR</span>
           </div>
-          <span className="hidden sm:inline">RealEstate</span>
+          <span className="hidden sm:inline">SaborRifaina</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -70,19 +70,19 @@ export default function Header() {
             href="/properties"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Properties
+            Propriedades
           </Link>
           <Link
             href="/about"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            About
+            Sobre
           </Link>
           <Link
             href="/contact"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Contact
+            Contato
           </Link>
         </nav>
 
@@ -94,7 +94,7 @@ export default function Header() {
                 href="/favorites"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Favorites
+                Favoritos
               </Link>
               {comparisonProperties.length > 0 && (
                 <Link
@@ -123,13 +123,13 @@ export default function Header() {
                 {displayName}
               </Link>
               <Button variant="outline" size="sm" asChild>
-                <a href="/logout">Logout</a>
+                <a href="/logout">Sair</a>
               </Button>
             </>
           ) : (
             <Button size="sm" asChild>
               <a href="#" onClick={handleSignIn}>
-                Sign In
+                Entrar
               </a>
             </Button>
           )}
@@ -157,19 +157,19 @@ export default function Header() {
               href="/properties"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Properties
+              Imóveis
             </Link>
             <Link
               href="/about"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              About
+              Sobre
             </Link>
             <Link
               href="/contact"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Contact
+              Contato
             </Link>
             {isAuthenticated ? (
               <>
@@ -177,7 +177,7 @@ export default function Header() {
                   href="/favorites"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Favorites
+                  Favoritos
                 </Link>
                 {comparisonProperties.length > 0 && (
                   <Link
@@ -203,13 +203,13 @@ export default function Header() {
                   {displayName}
                 </Link>
                 <Button variant="outline" size="sm" asChild className="w-full">
-                  <a href="/logout">Logout</a>
+                  <a href="/logout">Sair</a>
                 </Button>
               </>
             ) : (
               <Button size="sm" asChild className="w-full">
                 <a href="#" onClick={handleSignIn}>
-                  Sign In
+                  Entrar
                 </a>
               </Button>
             )}
