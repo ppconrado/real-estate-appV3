@@ -315,9 +315,9 @@ export default function Properties() {
       {/* Page Header */}
       <section className="border-b border-border bg-card/50 py-8">
         <div className="container">
-          <h1 className="text-4xl font-bold mb-2">Properties</h1>
+          <h1 className="text-4xl font-bold mb-2">Propriedades</h1>
           <p className="text-muted-foreground">
-            Browse our complete collection of available properties
+            Explore nossa coleção completa de propriedades disponíveis
           </p>
         </div>
       </section>
@@ -331,7 +331,7 @@ export default function Properties() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Search by location, property name..."
+                placeholder="Explore por localização, nome da propriedade..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
@@ -344,7 +344,7 @@ export default function Properties() {
               className="gap-2"
             >
               <Filter className="w-5 h-5" />
-              <span className="hidden sm:inline">Filters</span>
+              <span className="hidden sm:inline">Filtros</span>
             </Button>
             {isAuthenticated && (
               <SavedSearches
@@ -361,7 +361,7 @@ export default function Properties() {
                 {/* Property Type */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">
-                    Property Type
+                    Tipo de Propriedade
                   </label>
                   <select
                     value={filters.propertyType}
@@ -370,20 +370,20 @@ export default function Properties() {
                     }
                     className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent"
                   >
-                    <option value="">All Types</option>
-                    <option value="house">House</option>
-                    <option value="apartment">Apartment</option>
-                    <option value="condo">Condo</option>
-                    <option value="townhouse">Townhouse</option>
-                    <option value="land">Land</option>
-                    <option value="commercial">Commercial</option>
+                    <option value="">Todos os Tipos</option>
+                    <option value="house">Casa</option>
+                    <option value="apartment">Apartamento</option>
+                    <option value="condo">Condomínio</option>
+                    <option value="townhouse">Casa Geminada</option>
+                    <option value="land">Terreno</option>
+                    <option value="commercial">Comercial</option>
                   </select>
                 </div>
 
                 {/* Price Range */}
                 <div className="md:col-span-2 lg:col-span-2">
                   <label className="text-sm font-medium mb-2 block">
-                    Price Range
+                    Faixa de Preço
                   </label>
                   <div className="space-y-3">
                     <Slider
@@ -428,11 +428,11 @@ export default function Properties() {
                 {/* Bedrooms */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">
-                    Min Bedrooms
+                    Min Quartos
                   </label>
                   <input
                     type="number"
-                    placeholder="Bedrooms"
+                    placeholder="Quantidade mínima de quartos"
                     value={filters.bedrooms}
                     onChange={e =>
                       handleFilterChange("bedrooms", e.target.value)
@@ -444,11 +444,11 @@ export default function Properties() {
                 {/* Bathrooms */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">
-                    Min Bathrooms
+                    Min Banheiros
                   </label>
                   <input
                     type="number"
-                    placeholder="Bathrooms"
+                    placeholder="Quantidade mínima de banheiros"
                     value={filters.bathrooms}
                     onChange={e =>
                       handleFilterChange("bathrooms", e.target.value)
@@ -466,7 +466,7 @@ export default function Properties() {
                     className="w-full gap-2"
                   >
                     <X className="w-4 h-4" />
-                    Reset
+                    Reiniciar filtros
                   </Button>
                 </div>
               </div>
@@ -488,11 +488,11 @@ export default function Properties() {
         <div className="container">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-muted-foreground">
-              Showing{" "}
+              Mostrando{" "}
               <span className="font-semibold text-foreground">
                 {filteredProperties.length}
               </span>{" "}
-              properties
+              propriedades
             </p>
           </div>
 
@@ -508,10 +508,10 @@ export default function Properties() {
           ) : filteredProperties.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg mb-4">
-                No properties found matching your criteria
+                Nenhuma propriedade encontrada correspondendo aos seus critérios
               </p>
               <Button variant="outline" onClick={resetFilters}>
-                Clear Filters
+                Limpar Filtros
               </Button>
             </div>
           ) : (
@@ -542,19 +542,25 @@ export default function Properties() {
 
                       <div className="grid grid-cols-3 gap-3 mb-4 py-4 border-t border-b border-border">
                         <div className="text-center">
-                          <p className="text-xs text-muted-foreground">Beds</p>
+                          <p className="text-xs text-muted-foreground">
+                            Quartos
+                          </p>
                           <p className="font-semibold text-lg">
                             {property.bedrooms}
                           </p>
                         </div>
                         <div className="text-center">
-                          <p className="text-xs text-muted-foreground">Baths</p>
+                          <p className="text-xs text-muted-foreground">
+                            Banheiros
+                          </p>
                           <p className="font-semibold text-lg">
                             {property.bathrooms}
                           </p>
                         </div>
                         <div className="text-center">
-                          <p className="text-xs text-muted-foreground">Sqft</p>
+                          <p className="text-xs text-muted-foreground">
+                            Área (m)
+                          </p>
                           <p className="font-semibold text-lg">
                             {property.squareFeet?.toLocaleString() || "N/A"}
                           </p>
@@ -566,7 +572,7 @@ export default function Properties() {
                           ${Number(property.price).toLocaleString()}
                         </p>
                         <Button className="w-full bg-accent hover:bg-accent/90">
-                          View Details
+                          Ver Detalhes
                         </Button>
                         {isAuthenticated && (
                           <Button
@@ -591,8 +597,8 @@ export default function Properties() {
                           >
                             <Scale className="w-4 h-4" />
                             {isInComparison(property.id)
-                              ? "In Comparison"
-                              : "Compare"}
+                              ? "Em Comparação"
+                              : "Comparar"}
                           </Button>
                         )}
                       </div>
@@ -608,7 +614,7 @@ export default function Properties() {
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-8 mt-auto">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 RealEstate. All rights reserved.</p>
+          <p>&copy; 2026 SaborRifaina. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
