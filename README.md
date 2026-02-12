@@ -4,10 +4,41 @@
 
 Real Estate App is a Next.js + TypeScript application for browsing property listings and managing them through an admin dashboard. It includes public pages, authenticated admin tooling, a Postgres database via Prisma, and image storage integration.
 
+## Documentation
+
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - Deployment notes
+- [docs/CHECKPOINT.md](docs/CHECKPOINT.md) - Project checkpoint notes
+- [vite-to-nextjs-conversion.md](vite-to-nextjs-conversion.md) - Migration notes
+
+## Environments
+
+Development (Local)
+
+- Frontend: http://localhost:3000
+- Database: Postgres (set via `DATABASE_URL`)
+- Storage: Cloudinary or storage proxy
+
+Production (Vercel)
+
+- Frontend: your Vercel domain
+- Database: managed Postgres (Neon or equivalent)
+- Storage: Cloudinary or storage proxy
+
 ## Features
 
+Public features
+
 - Public property browsing, search, favorites, comparison, and contact forms.
+- Property detail pages with image galleries.
+- Saved searches and inquiry submission.
+
+Admin features
+
 - Admin dashboard for property CRUD, image management, and bulk import.
+- Inquiries, contacts, and viewing scheduling workflows.
+
+Infrastructure features
+
 - Viewing scheduling and inquiry management backed by Postgres.
 - Map rendering for property locations via Mapbox.
 - tRPC API with React Query for typed data access.
@@ -89,14 +120,27 @@ Prerequisites
 
 - Node.js (LTS)
 - pnpm
+- Postgres database
 
-Install dependencies
+1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-Run the app
+2. Configure environment variables
+
+Create a `.env` file in the project root and set the values listed below.
+
+3. Prepare the database
+
+```bash
+pnpm db:push
+pnpm db:migrate
+pnpm db:seed
+```
+
+4. Run the app
 
 ```bash
 pnpm dev
@@ -125,3 +169,18 @@ pnpm db:seed
 ## Admin Access
 
 Admin access is assigned by matching the OAuth user `openId` to `OWNER_OPEN_ID`. Use `/api/auth/debug` to confirm the current session and resolved role after logging in.
+
+## Project Structure
+
+```
+src/
+	app/            # Next.js routes, layouts, API routes
+	components/     # Shared UI components
+	screens/        # Feature screens (Admin, Properties, etc.)
+	server/         # tRPC routers, auth, storage, notifications
+	lib/            # Prisma client and shared utilities
+	shared/         # Shared constants and types
+prisma/
+	schema.prisma   # Database schema
+	seed.ts         # Seed script
+```
