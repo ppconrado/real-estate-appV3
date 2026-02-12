@@ -3,8 +3,8 @@ import "./globals.css";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "RealEstate",
-  description: "Modern real estate listings and tours",
+  title: "SaborRifaina - Imóveis e Tours",
+  description: "Listagens de imóveis modernos e tours",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body className="antialiased">
         <Providers>{children}</Providers>
       </body>
