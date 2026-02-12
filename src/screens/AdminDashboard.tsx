@@ -92,18 +92,18 @@ export default function AdminDashboard() {
   const uploadImages = trpc.images.upload.useMutation({
     onSuccess: () => {
       utils.images.getPropertyImages.invalidate();
-      toast.success("Images uploaded successfully");
+      toast.success("Imagens carregadas com sucesso");
       setUploadingPropertyId(null);
     },
     onError: error => {
-      toast.error(error.message || "Failed to upload images");
+      toast.error(error.message || "Falha no carregamento de imagens");
     },
   });
 
   const deleteImage = trpc.images.delete.useMutation({
     onSuccess: () => {
       utils.images.getPropertyImages.invalidate();
-      toast.success("Image deleted");
+      toast.success("Imagem deletada com sucesso");
     },
   });
 
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
       resetForm();
     },
     onError: error => {
-      toast.error(error.message || "Failed to create property");
+      toast.error(error.message || "Criação da propriedade falhou");
     },
   });
 
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
       resetForm();
     },
     onError: error => {
-      toast.error(error.message || "Failed to update property");
+      toast.error(error.message || "Atualização da propriedade falhou");
     },
   });
 
@@ -155,7 +155,7 @@ export default function AdminDashboard() {
       toast.success("Property deleted");
     },
     onError: error => {
-      toast.error(error.message || "Failed to delete property");
+      toast.error(error.message || "Falha ao deletar a propriedade");
     },
   });
 
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
       const data = await response.json();
       const feature = data?.features?.[0];
       if (!feature || !Array.isArray(feature.center)) {
-        toast.error("No geocoding results found");
+        toast.error("Nenhum resultado de geocodificação encontrado");
         return;
       }
 
@@ -310,10 +310,12 @@ export default function AdminDashboard() {
         latitude: Number(lat).toFixed(6),
         longitude: Number(lng).toFixed(6),
       }));
-      toast.success("Latitude/longitude updated from address");
+      toast.success("Latitude/longitude atualizadas a partir do endereço");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to geocode address"
+        error instanceof Error
+          ? error.message
+          : "Falha ao geocodificar o endereço"
       );
     } finally {
       setIsGeocoding(false);
@@ -327,12 +329,12 @@ export default function AdminDashboard() {
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center space-y-6">
-            <h1 className="text-3xl font-bold">Access Denied</h1>
+            <h1 className="text-3xl font-bold">Acesso Negado</h1>
             <p className="text-muted-foreground">
-              You do not have permission to access the admin dashboard.
+              Você não tem permissão para acessar o painel de administração.
             </p>
             <Button size="lg" asChild className="bg-accent hover:bg-accent/90">
-              <Link href="/">Go Home</Link>
+              <Link href="/">Voltar para a página inicial</Link>
             </Button>
           </div>
         </div>
@@ -349,17 +351,17 @@ export default function AdminDashboard() {
         <div className="container">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-2">
             <div>
-              <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+              <h1 className="text-4xl font-bold">Painel de Administração</h1>
               <p className="text-muted-foreground">
-                Manage your property listings and images
+                Gerencie suas listagens de propriedades e imagens
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
               <Button size="lg" variant="outline" asChild>
-                <Link href="/admin/inquiries">Inquiries</Link>
+                <Link href="/admin/inquiries">Consultas</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="/admin/viewings">Viewings</Link>
+                <Link href="/admin/viewings">Visitas</Link>
               </Button>
               <Button
                 size="lg"
@@ -373,7 +375,7 @@ export default function AdminDashboard() {
                 }}
               >
                 <Plus className="w-5 h-5" />
-                {showAddForm ? "Close Form" : "Add Property"}
+                {showAddForm ? "Fechar Formulário" : "Adicionar Propriedade"}
               </Button>
             </div>
           </div>
@@ -386,17 +388,19 @@ export default function AdminDashboard() {
           <div className="container">
             <Card className="p-8">
               <h2 className="text-2xl font-bold mb-6">
-                {editingPropertyId ? "Edit Property" : "Add New Property"}
+                {editingPropertyId
+                  ? "Editar Propriedade"
+                  : "Adicionar Nova Propriedade"}
               </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Title
+                      Título
                     </label>
                     <input
                       type="text"
-                      placeholder="Property title"
+                      placeholder="Título da propriedade"
                       value={formData.title}
                       onChange={e =>
                         setFormData(prev => ({
@@ -409,11 +413,11 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Price
+                      Preço
                     </label>
                     <input
                       type="number"
-                      placeholder="Price"
+                      placeholder="Preço"
                       value={formData.price}
                       onChange={e =>
                         setFormData(prev => ({
@@ -426,7 +430,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Property Type
+                      Tipo de Propriedade
                     </label>
                     <select
                       value={formData.propertyType}
@@ -438,12 +442,12 @@ export default function AdminDashboard() {
                       }
                       className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                     >
-                      <option value="house">House</option>
-                      <option value="apartment">Apartment</option>
-                      <option value="condo">Condo</option>
-                      <option value="townhouse">Townhouse</option>
-                      <option value="land">Land</option>
-                      <option value="commercial">Commercial</option>
+                      <option value="house">Casa</option>
+                      <option value="apartment">Apartamento</option>
+                      <option value="condo">Condomínio</option>
+                      <option value="townhouse">Casa Geminada</option>
+                      <option value="land">Terreno</option>
+                      <option value="commercial">Comercial</option>
                     </select>
                   </div>
                   <div>
@@ -460,9 +464,9 @@ export default function AdminDashboard() {
                       }
                       className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                     >
-                      <option value="available">Available</option>
-                      <option value="pending">Pending</option>
-                      <option value="sold">Sold</option>
+                      <option value="available">Disponível</option>
+                      <option value="pending">Pendente</option>
+                      <option value="sold">Vendido</option>
                     </select>
                   </div>
                 </div>
@@ -470,11 +474,11 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Bedrooms
+                      Quartos
                     </label>
                     <input
                       type="number"
-                      placeholder="Bedrooms"
+                      placeholder="Quartos"
                       value={formData.bedrooms}
                       onChange={e =>
                         setFormData(prev => ({
@@ -487,11 +491,11 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Bathrooms
+                      Banheiros
                     </label>
                     <input
                       type="number"
-                      placeholder="Bathrooms"
+                      placeholder="Banheiros"
                       value={formData.bathrooms}
                       onChange={e =>
                         setFormData(prev => ({
@@ -504,11 +508,11 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Square Feet
+                      Metros Quadrados
                     </label>
                     <input
                       type="number"
-                      placeholder="Square Feet"
+                      placeholder="Metros Quadrados"
                       value={formData.squareFeet}
                       onChange={e =>
                         setFormData(prev => ({
@@ -524,11 +528,11 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Address
+                      Endereço
                     </label>
                     <input
                       type="text"
-                      placeholder="Street address"
+                      placeholder="Endereço"
                       value={formData.address}
                       onChange={e =>
                         setFormData(prev => ({
@@ -541,11 +545,11 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      City
+                      Cidade
                     </label>
                     <input
                       type="text"
-                      placeholder="City"
+                      placeholder="Cidade"
                       value={formData.city}
                       onChange={e =>
                         setFormData(prev => ({ ...prev, city: e.target.value }))
@@ -558,11 +562,11 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      State
+                      Estado
                     </label>
                     <input
                       type="text"
-                      placeholder="State"
+                      placeholder="Estado"
                       value={formData.state}
                       onChange={e =>
                         setFormData(prev => ({
@@ -575,11 +579,11 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Zip Code
+                      CEP
                     </label>
                     <input
                       type="text"
-                      placeholder="Zip code"
+                      placeholder="CEP"
                       value={formData.zipCode}
                       onChange={e =>
                         setFormData(prev => ({
@@ -641,17 +645,18 @@ export default function AdminDashboard() {
                     {isGeocoding ? "Geocoding..." : "Auto-fill from address"}
                   </Button>
                   <p className="text-sm text-muted-foreground">
-                    Uses Mapbox to find coordinates from the address fields.
+                    Utilize o Mapbox para encontrar coordenadas a partir dos
+                    campos de endereço.
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Amenities (comma separated)
+                    Comodidades (separadas por vírgula)
                   </label>
                   <input
                     type="text"
-                    placeholder="Pool, Gym, Parking"
+                    placeholder="Piscina, Academia, Estacionamento"
                     value={formData.amenities}
                     onChange={e =>
                       setFormData(prev => ({
@@ -677,16 +682,16 @@ export default function AdminDashboard() {
                     className="h-4 w-4 rounded border-border"
                   />
                   <label htmlFor="featured" className="text-sm font-medium">
-                    Featured listing
+                    Destaque
                   </label>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Description
+                    Descrição
                   </label>
                   <textarea
-                    placeholder="Property description"
+                    placeholder="Descrição da propriedade"
                     rows={4}
                     value={formData.description}
                     onChange={e =>
@@ -710,14 +715,14 @@ export default function AdminDashboard() {
                   >
                     {editingPropertyId
                       ? updatePropertyMutation.isPending
-                        ? "Saving..."
-                        : "Update Property"
+                        ? "Salvando..."
+                        : "Atualizar Propriedade"
                       : createPropertyMutation.isPending
-                        ? "Creating..."
-                        : "Add Property"}
+                        ? "Criando..."
+                        : "Adicionar Propriedade"}
                   </Button>
                   <Button type="button" variant="outline" onClick={resetForm}>
-                    Cancel
+                    Cancelar
                   </Button>
                 </div>
               </form>
@@ -774,7 +779,7 @@ export default function AdminDashboard() {
                         onClick={() => {
                           if (
                             confirm(
-                              "Delete this property? This cannot be undone."
+                              "Deseja realmente excluir esta propriedade? Esta ação não pode ser desfeita."
                             )
                           ) {
                             deletePropertyMutation.mutate({ id: property.id });
@@ -811,7 +816,7 @@ export default function AdminDashboard() {
                       <div className="space-y-6">
                         <div>
                           <h4 className="text-lg font-semibold mb-4">
-                            Manage Images
+                            Gerenciar Imagens
                           </h4>
 
                           {uploadingPropertyId === property.id ? (
@@ -828,7 +833,7 @@ export default function AdminDashboard() {
                               className="w-full bg-accent hover:bg-accent/90 gap-2"
                             >
                               <Plus className="w-4 h-4" />
-                              Upload Images
+                              Carregue as imagens para esta propriedade
                             </Button>
                           )}
                         </div>
@@ -838,7 +843,7 @@ export default function AdminDashboard() {
                           propertyImages.length > 0 && (
                             <div>
                               <h5 className="font-medium mb-3">
-                                Current Images ({propertyImages.length})
+                                Imagens Atuais ({propertyImages.length})
                               </h5>
                               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {propertyImages.map((image: any) => (
@@ -847,9 +852,12 @@ export default function AdminDashboard() {
                                     className="relative group rounded-lg overflow-hidden border border-border"
                                   >
                                     <div className="aspect-square bg-muted flex items-center justify-center">
-                                      <img
+                                      <image
                                         src={image.imageUrl}
-                                        alt={image.caption || "Property image"}
+                                        alt={
+                                          image.caption ||
+                                          "Imagem da propriedade"
+                                        }
                                         className="w-full h-full object-cover"
                                       />
                                     </div>
@@ -882,7 +890,7 @@ export default function AdminDashboard() {
                           propertyImages.length === 0) &&
                           uploadingPropertyId !== property.id && (
                             <p className="text-center text-muted-foreground py-8">
-                              No images uploaded yet
+                              Nenhuma imagem carregada ainda
                             </p>
                           )}
                       </div>
@@ -898,7 +906,7 @@ export default function AdminDashboard() {
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-8 mt-auto">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 RealEstate. All rights reserved.</p>
+          <p>&copy; 2026 SaborRifaina. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
