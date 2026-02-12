@@ -559,7 +559,7 @@ export default function Properties() {
                         </div>
                         <div className="text-center">
                           <p className="text-xs text-muted-foreground">
-                            Área (m)
+                            metros²
                           </p>
                           <p className="font-semibold text-lg">
                             {property.squareFeet?.toLocaleString() || "N/A"}
@@ -569,7 +569,7 @@ export default function Properties() {
 
                       <div className="mt-auto space-y-3">
                         <p className="text-2xl font-bold text-accent">
-                          ${Number(property.price).toLocaleString()}
+                          R$ {Number(property.price).toLocaleString()}
                         </p>
                         <Button className="w-full bg-accent hover:bg-accent/90">
                           Ver Detalhes
