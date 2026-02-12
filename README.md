@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Real Estate App (v3)
+
+## Overview
+
+Real Estate App is a Next.js + TypeScript application for browsing property listings and managing them through an admin dashboard. It includes public pages, authenticated admin tooling, a Postgres database via Prisma, and image storage integration.
+
+## Features
+
+- Public property browsing, search, favorites, comparison, and contact forms.
+- Admin dashboard for property CRUD, image management, and bulk import.
+- Viewing scheduling and inquiry management backed by Postgres.
+- Map rendering for property locations via Mapbox.
+- tRPC API with React Query for typed data access.
+
+## Tech Stack
+
+- Framework: Next.js (App Router) + React 19
+- Language: TypeScript
+- Styling: Tailwind CSS 4, Radix UI, class-variance-authority
+- Data: tRPC + React Query
+- Database: Postgres
+- ORM: Prisma (with `@prisma/adapter-pg`)
+- Auth: Google OAuth + JWT session cookie
+- Maps: Mapbox GL
+- Package manager: pnpm
+
+## Architecture
+
+UI Layer
+
+- `src/app/` - Next.js routes and layouts
+- `src/screens/` - Feature screens (Home, Properties, AdminDashboard)
+- `src/components/` - Reusable UI components
+
+Data Layer
+
+- `src/server/` - tRPC routers, server helpers, and storage
+- `src/lib/` - Prisma client and shared utilities
+- `src/app/api/` - API routes (`/api/trpc`, `/api/properties`, OAuth callback)
+
+Styling
+
+- Global styles in `src/app/globals.css`
+- Component styling via Tailwind classes
+
+## Key Routes
+
+- `/` - Home
+- `/properties` and `/properties/[id]` - Property list and detail
+- `/comparison`, `/favorites`, `/contact`, `/profile`, `/about`
+- `/admin/*` - Admin dashboard sections (properties, inquiries, contacts, viewings, import)
+
+## API Endpoints
+
+- `/api/trpc` - tRPC endpoint
+- `/api/properties` - Public properties list (REST)
+- `/api/oauth/callback` - OAuth callback
+- `/api/auth/debug` - Session debug info (dev only)
+
+## Environment Variables
+
+Create a `.env` file in the project root.
+
+Core
+
+- `DATABASE_URL` - Postgres connection string
+- `JWT_SECRET` - Session signing secret
+- `GOOGLE_CLIENT_ID` - OAuth client id
+- `GOOGLE_CLIENT_SECRET` - OAuth client secret
+- `NEXT_PUBLIC_APP_ID` - Public app id used in OAuth flows
+- `OWNER_OPEN_ID` - Grants admin role to a specific OpenID
+
+Maps
+
+- `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` - Mapbox token for maps
+
+Storage (choose one)
+
+- Cloudinary: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `CLOUDINARY_FOLDER` (optional)
+- Storage proxy: `BUILT_IN_FORGE_API_URL`, `BUILT_IN_FORGE_API_KEY`
+
+Optional
+
+- `OAUTH_SERVER_URL` - OAuth base URL (default not required)
 
 ## Getting Started
 
-First, run the development server:
+Prerequisites
+
+- Node.js (LTS)
+- pnpm
+
+Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the app
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database
 
-## Learn More
+Prisma uses a Postgres database. Make sure `DATABASE_URL` is set before running migrations.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm db:push
+pnpm db:migrate
+pnpm db:seed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `pnpm dev` - Start Next.js dev server
+- `pnpm build` - Production build
+- `pnpm start` - Run production server
+- `pnpm lint` - Lint
+- `pnpm db:push` - Sync schema to database
+- `pnpm db:migrate` - Create and apply migrations
+- `pnpm db:seed` - Seed the database
 
-## Deploy on Vercel
+## Admin Access
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Admin access is assigned by matching the OAuth user `openId` to `OWNER_OPEN_ID`. Use `/api/auth/debug` to confirm the current session and resolved role after logging in.
