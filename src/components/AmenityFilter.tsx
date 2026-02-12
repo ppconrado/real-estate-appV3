@@ -37,8 +37,8 @@ export default function AmenityFilter({
       >
         <span className="text-sm font-medium">
           {selectedAmenities.length > 0
-            ? `${selectedAmenities.length} Amenities Selected`
-            : "Filter by Amenities"}
+            ? `${selectedAmenities.length} Comodidades Selecionadas`
+            : "Filtrar por Comodidades"}
         </span>
         <ChevronDown
           className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
@@ -53,7 +53,7 @@ export default function AmenityFilter({
             {selectedAmenities.length > 0 && (
               <div className="flex justify-between items-center pb-3 border-b border-border">
                 <span className="text-xs font-medium text-muted-foreground">
-                  {selectedAmenities.length} Selected
+                  {selectedAmenities.length} Selecionadas
                 </span>
                 <Button
                   onClick={clearAll}
@@ -61,7 +61,7 @@ export default function AmenityFilter({
                   size="sm"
                   className="h-6 px-2 text-xs"
                 >
-                  Clear All
+                  Limpar Tudo
                 </Button>
               </div>
             )}
@@ -97,7 +97,7 @@ export default function AmenityFilter({
                 className="w-full"
                 size="sm"
               >
-                Apply Filters
+                Aplicar Filtros
               </Button>
             </div>
           </div>
