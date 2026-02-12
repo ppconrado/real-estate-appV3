@@ -8,9 +8,9 @@ export function formatPrice(value: PriceInput) {
     return "N/A";
   }
 
-  return numeric.toLocaleString("en-US", {
+  return numeric.toLocaleString("pt-BR", {
     style: "currency",
-    currency: "USD",
+    currency: "BRL",
     maximumFractionDigits: 0,
   });
 }
