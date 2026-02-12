@@ -2,22 +2,22 @@
  * Common real estate amenities
  */
 export const AMENITIES = [
-  { id: "pool", label: "Swimming Pool", icon: "🏊" },
-  { id: "gym", label: "Gym/Fitness Center", icon: "💪" },
-  { id: "parking", label: "Parking", icon: "🅿️" },
-  { id: "ac", label: "Air Conditioning", icon: "❄️" },
-  { id: "heating", label: "Heating", icon: "🔥" },
-  { id: "laundry", label: "Laundry", icon: "🧺" },
-  { id: "dishwasher", label: "Dishwasher", icon: "🍽️" },
-  { id: "balcony", label: "Balcony/Patio", icon: "🏡" },
-  { id: "garden", label: "Garden", icon: "🌳" },
-  { id: "garage", label: "Garage", icon: "🚗" },
-  { id: "security", label: "Security System", icon: "🔒" },
-  { id: "elevator", label: "Elevator", icon: "🛗" },
+  { id: "piscina", label: "Piscina", icon: "🏊" },
+  { id: "academia", label: "Academia/Centro de Fitness", icon: "💪" },
+  { id: "estacionamento", label: "Estacionamento", icon: "🅿️" },
+  { id: "ar_condicionado", label: "Ar Condicionado", icon: "❄️" },
+  { id: "aquecimento", label: "Aquecimento", icon: "🔥" },
+  { id: "lavanderia", label: "Lavanderia", icon: "🧺" },
+  { id: "maquina_lavar_louca", label: "Máquina de Lavar Louça", icon: "🍽️" },
+  { id: "varanda_patio", label: "Varanda/Patio", icon: "🏡" },
+  { id: "jardim", label: "Jardim", icon: "🌳" },
+  { id: "garagem", label: "Garagem", icon: "🚗" },
+  { id: "sistema_seguranca", label: "Sistema de Segurança", icon: "🔒" },
+  { id: "elevador", label: "Elevador", icon: "🛗" },
   { id: "concierge", label: "Concierge", icon: "🎩" },
   { id: "theater", label: "Home Theater", icon: "🎬" },
   { id: "sauna", label: "Sauna", icon: "🧖" },
-  { id: "wifi", label: "WiFi Ready", icon: "📶" },
+  { id: "wifi", label: "WiFi Disponível", icon: "📶" },
 ] as const;
 
 export type AmenityId = (typeof AMENITIES)[number]["id"];
