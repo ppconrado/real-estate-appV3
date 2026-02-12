@@ -40,8 +40,10 @@ export default function Contact() {
       {/* Page Header */}
       <section className="border-b border-border bg-card/50 py-8">
         <div className="container">
-          <h1 className="text-4xl font-bold mb-2">Contact Us</h1>
-          <p className="text-muted-foreground">Get in touch with our team</p>
+          <h1 className="text-4xl font-bold mb-2">Contato</h1>
+          <p className="text-muted-foreground">
+            Entre em contato com nossa equipe
+          </p>
         </div>
       </section>
 
@@ -57,8 +59,8 @@ export default function Contact() {
                     <Phone className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">(555) 123-4567</p>
+                    <h3 className="font-semibold mb-1">Telefone</h3>
+                    <p className="text-muted-foreground">(00) 00000-0000</p>
                   </div>
                 </div>
               </Card>
@@ -70,7 +72,9 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">info@realestate.com</p>
+                    <p className="text-muted-foreground">
+                      info@saborrifaina.com
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -81,11 +85,11 @@ export default function Contact() {
                     <MapPin className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Address</h3>
+                    <h3 className="font-semibold mb-1">Endereço</h3>
                     <p className="text-muted-foreground">
-                      123 Business St
+                      123 Av. da Praia, 1000
                       <br />
-                      San Francisco, CA 94102
+                      Rifaina, SP
                     </p>
                   </div>
                 </div>
@@ -95,7 +99,9 @@ export default function Contact() {
             {/* Contact Form */}
             <div className="lg:col-span-2">
               <Card className="p-8">
-                <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
+                <h2 className="text-2xl font-bold mb-6">
+                  Envie-nos uma Mensagem
+                </h2>
 
                 {submitted ? (
                   <div className="text-center py-12 space-y-4">
@@ -114,9 +120,9 @@ export default function Contact() {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-semibold">Message Sent!</h3>
+                    <h3 className="text-xl font-semibold">Mensagem Enviada!</h3>
                     <p className="text-muted-foreground">
-                      Thank you for contacting us. We'll get back to you soon.
+                      Obrigado por nos contatar. Retornaremos em breve.
                     </p>
                   </div>
                 ) : (
@@ -124,14 +130,14 @@ export default function Contact() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium mb-2">
-                          Name
+                          Nome
                         </label>
                         <input
                           type="text"
                           name="name"
                           value={formData.name}
                           onChange={handleChange}
-                          placeholder="Your name"
+                          placeholder="Seu nome"
                           required
                           className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                         />
@@ -145,7 +151,7 @@ export default function Contact() {
                           name="email"
                           value={formData.email}
                           onChange={handleChange}
-                          placeholder="your@email.com"
+                          placeholder="nome@email.com"
                           required
                           className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                         />
@@ -154,27 +160,27 @@ export default function Contact() {
 
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        Phone (Optional)
+                        Telefone (Opcional)
                       </label>
                       <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="(555) 123-4567"
+                        placeholder="(00) 00000-0000"
                         className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        Message
+                        Mensagem
                       </label>
                       <textarea
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
-                        placeholder="Tell us how we can help..."
+                        placeholder="Conte-nos como podemos ajudar..."
                         rows={6}
                         required
                         className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent resize-none"
@@ -186,7 +192,7 @@ export default function Contact() {
                       size="lg"
                       className="w-full bg-accent hover:bg-accent/90"
                     >
-                      Send Message
+                      Enviar Mensagem
                     </Button>
                   </form>
                 )}
@@ -199,7 +205,7 @@ export default function Contact() {
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-8 mt-auto">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 RealEstate. All rights reserved.</p>
+          <p>&copy; 2026 SaborRifaina. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
