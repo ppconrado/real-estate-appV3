@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "prisma": "prisma",
@@ -49,6 +49,7 @@
     "@trpc/react-query": "^11.9.0",
     "@trpc/server": "^11.9.0",
     "axios": "^1.13.4",
+    "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",

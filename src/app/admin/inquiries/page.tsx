@@ -1,8 +1,8 @@
 import InquiriesDashboard from "@/screens/admin/InquiriesDashboard";
 
 export const metadata = {
-  title: "Admin Inquiries | RealEstate",
-  description: "Manage property inquiries.",
+  title: "Gerenciar Consultas | SaborRifaina",
+  description: "Gerencie as consultas de propriedades.",
 };
 
 export default function AdminInquiriesPage() {

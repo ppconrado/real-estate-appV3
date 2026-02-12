@@ -44,6 +44,8 @@ model User {
     openId       String   @unique @db.VarChar(64)
     name         String?  @db.Text
     email        String?  @db.VarChar(320)
+    telefone     String?  @db.VarChar(30)
+    passwordHash String?  @db.VarChar(255)
     loginMethod  String?  @db.VarChar(64)
     role         Role     @default(user)
     createdAt    DateTime @default(now())

@@ -66,7 +66,13 @@ async function main() {
       zipCode: "33139",
       latitude: 25.7907,
       longitude: -80.13,
-      amenities: ["pool", "beach access", "garage", "ocean view", "smart home"],
+      amenities: [
+        "piscina",
+        "acesso_praia",
+        "garagem",
+        "vista_represa",
+        "casa_inteligente",
+      ],
       featured: true,
       status: "available",
       images: {
