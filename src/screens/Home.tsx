@@ -227,7 +227,7 @@ export default function Home() {
 
                         <div className="mt-auto">
                           <p className="text-2xl font-bold text-accent mb-3">
-                            ${Number(property.price).toLocaleString()}
+                            R$ {Number(property.price).toLocaleString()}
                           </p>
                           <Button className="w-full bg-accent hover:bg-accent/90">
                             Ver Detalhes
