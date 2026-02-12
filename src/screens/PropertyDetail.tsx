@@ -401,19 +401,25 @@ export default function PropertyDetail() {
                       <span className="text-muted-foreground">
                         Ano de Construção
                       </span>
-                      <span className="font-medium">2020</span>
+                      <span className="font-medium">
+                        {resolvedProperty.yearBuilt}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">
                         Tamanho do Lote
                       </span>
-                      <span className="font-medium">0.75 hectares</span>
+                      <span className="font-medium">
+                        {resolvedProperty.lotSize} hectares
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">
                         Taxas de HOA
                       </span>
-                      <span className="font-medium">$500/mês</span>
+                      <span className="font-medium">
+                        {resolvedProperty.hoaFees}
+                      </span>
                     </div>
                   </div>
                 </Card>
