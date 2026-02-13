@@ -59,8 +59,10 @@ export default function Contact() {
                     <Phone className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Telefone</h3>
-                    <p className="text-muted-foreground">(00) 00000-0000</p>
+                    <h3 className="font-semibold mb-1">
+                      Telefone Corretor de Imóveis
+                    </h3>
+                    <p className="text-muted-foreground">+55 (16) 99963-7161</p>
                   </div>
                 </div>
               </Card>
@@ -71,9 +73,11 @@ export default function Contact() {
                     <Mail className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Email</h3>
+                    <h3 className="font-semibold mb-1">
+                      Email Corretor de Imóveis
+                    </h3>
                     <p className="text-muted-foreground">
-                      info@saborrifaina.com
+                      Daniel Polo - danipolo.uk@gmail.com
                     </p>
                   </div>
                 </div>
@@ -85,11 +89,13 @@ export default function Contact() {
                     <MapPin className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Endereço</h3>
+                    <h3 className="font-semibold mb-1">
+                      Dev Aplicação e Comercial
+                    </h3>
                     <p className="text-muted-foreground">
-                      123 Av. da Praia, 1000
+                      Jose Paulo Archetti Conrado
                       <br />
-                      Rifaina, SP
+                      ppconrado@yahoo.com.br - +55(16) 98198-2636
                     </p>
                   </div>
                 </div>
