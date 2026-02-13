@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import type { User } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { COOKIE_NAME } from "@/shared/const";
 import { prisma } from "@/lib/prisma";
 import { buildClearSessionCookieVariants } from "@/server/auth/cookies";
@@ -25,13 +26,15 @@ async function getUserFromSession(sessionCookie: string) {
       process.env.OWNER_OPEN_ID && session.openId === process.env.OWNER_OPEN_ID;
 
     if (existing.name !== session.name || isOwner) {
+      // Only update name, lastSignedIn, and role here. loginMethod cannot be updated from session.
+      const updateData: Prisma.UserUpdateInput = {
+        name: session.name || null,
+        lastSignedIn: new Date(),
+        role: isOwner ? "admin" : undefined,
+      };
       return await prisma.user.update({
         where: { openId: session.openId },
-        data: {
-          name: session.name || null,
-          lastSignedIn: new Date(),
-          role: isOwner ? "admin" : undefined,
-        },
+        data: updateData,
       });
     }
 
@@ -44,12 +47,33 @@ async function getUserFromSession(sessionCookie: string) {
       process.env.OWNER_OPEN_ID &&
       userInfo.openId === process.env.OWNER_OPEN_ID;
 
+    // Block user creation for Google OAuth logins (only allow if user already exists)
+    if (
+      (userInfo.loginMethod === "google" || userInfo.platform === "google") &&
+      !isOwner
+    ) {
+      // Only return user if already exists
+      const existingGoogleUser = await prisma.user.findUnique({
+        where: { openId: userInfo.openId },
+      });
+      if (existingGoogleUser) {
+        return existingGoogleUser;
+      } else {
+        console.warn("[Auth] Google OAuth attempted to create user, blocking.");
+        return null;
+      }
+    }
+
+    // For non-Google or OWNER, allow upsert
     return await prisma.user.upsert({
       where: { openId: userInfo.openId },
       update: {
         name: userInfo.name || null,
         email: userInfo.email ?? null,
-        loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
+        // Only update loginMethod if not 'local'
+        ...(userInfo.loginMethod !== "local"
+          ? { loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null }
+          : {}),
         lastSignedIn: new Date(),
         role: isOwner ? "admin" : undefined,
       },

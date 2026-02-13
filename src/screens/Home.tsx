@@ -29,13 +29,7 @@ function FeaturedPropertyImage({
 
   return (
     <div className="w-full h-48 bg-muted overflow-hidden relative">
-      <Image
-        src={imageUrl}
-        alt={title}
-        fill
-        className="object-cover"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      />
+      <Image src={imageUrl} alt={title} fill className="object-cover" />
     </div>
   );
 }
@@ -43,11 +37,8 @@ function FeaturedPropertyImage({
 export default function Home() {
   const { data: featuredPropertiesRaw, isLoading } =
     trpc.properties.getFeatured.useQuery();
-
-  // Unwrap SuperJSON envelope if present
   const featuredProperties = useMemo(() => {
     if (!featuredPropertiesRaw) return [];
-    // Check if data is wrapped in SuperJSON format
     if (
       typeof featuredPropertiesRaw === "object" &&
       "json" in featuredPropertiesRaw &&
@@ -58,7 +49,6 @@ export default function Home() {
     }
     return Array.isArray(featuredPropertiesRaw) ? featuredPropertiesRaw : [];
   }, [featuredPropertiesRaw]);
-
   const featuredList = Array.isArray(featuredProperties)
     ? featuredProperties
     : [];
@@ -66,7 +56,6 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32 bg-gradient-to-br from-background via-background to-card">
         {/* Decorative elements */}
@@ -74,7 +63,6 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
         </div>
-
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
@@ -86,7 +74,6 @@ export default function Home() {
               Explore nossa coleção selecionada de imóveis residenciais e para
               seu lazer.
             </p>
-
             {/* Search Bar */}
             <div className="flex flex-col sm:flex-row gap-3 mt-8 max-w-2xl mx-auto">
               <div className="flex-1 relative">
@@ -101,7 +88,6 @@ export default function Home() {
                 Explore
               </Button>
             </div>
-
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button
@@ -118,7 +104,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Features Section */}
       <section className="py-16 md:py-24 border-t border-border">
         <div className="container">
@@ -134,7 +119,6 @@ export default function Home() {
                 Propriedades nos bairros e áreas mais desejáveis
               </p>
             </div>
-
             <div className="text-center space-y-3">
               <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mx-auto">
                 <TrendingUp className="w-6 h-6 text-accent" />
@@ -144,7 +128,6 @@ export default function Home() {
                 Preços competitivos com análise de mercado transparente
               </p>
             </div>
-
             <div className="text-center space-y-3">
               <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mx-auto">
                 <Award className="w-6 h-6 text-accent" />
@@ -158,7 +141,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Featured Properties Section */}
       <section className="py-16 md:py-24 bg-card/50 border-t border-border">
         <div className="container">
@@ -169,7 +151,6 @@ export default function Home() {
                 Seleções cuidadosamente escolhidas da nossa coleção premium
               </p>
             </div>
-
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map(i => (
@@ -189,7 +170,6 @@ export default function Home() {
                         imageUrl={property.images?.[0]?.imageUrl}
                         title={property.title}
                       />
-
                       {/* Property Info */}
                       <div className="p-6 flex-1 flex flex-col">
                         <h3 className="font-semibold text-lg mb-2 line-clamp-2">
@@ -199,7 +179,6 @@ export default function Home() {
                           <MapPin className="w-4 h-4" />
                           {property.city}, {property.state}
                         </p>
-
                         <div className="grid grid-cols-3 gap-3 mb-4 py-4 border-t border-b border-border">
                           <div className="text-center">
                             <p className="text-sm text-muted-foreground">
@@ -224,7 +203,6 @@ export default function Home() {
                             </p>
                           </div>
                         </div>
-
                         <div className="mt-auto">
                           <p className="text-2xl font-bold text-accent mb-3">
                             R$ {Number(property.price).toLocaleString()}
@@ -239,7 +217,6 @@ export default function Home() {
                 ))}
               </div>
             )}
-
             <div className="text-center">
               <Button size="lg" variant="outline" asChild>
                 <Link href="/properties">Explore Todas as Propriedades</Link>
@@ -248,7 +225,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* CTA Section */}
       <section className="py-16 md:py-24 border-t border-border">
         <div className="container">
@@ -275,7 +251,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-12 mt-auto">
         <div className="container">

@@ -1,5 +1,5 @@
-import Home from "@/screens/Home";
+import HomeClientWrapper from "./HomeClientWrapper";
 
 export default function Page() {
-  return <Home />;
+  return <HomeClientWrapper />;
 }
