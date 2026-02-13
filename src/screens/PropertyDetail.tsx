@@ -234,7 +234,7 @@ export default function PropertyDetail() {
                     {formatPrice(resolvedProperty.price)}
                   </div>
 
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card className="p-4 text-center">
                       <div className="flex items-center justify-center gap-2 mb-2">
                         <Bed className="w-5 h-5 text-accent" />
