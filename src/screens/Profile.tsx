@@ -136,6 +136,12 @@ export default function Profile() {
                 </span>
               </div>
               <div className="flex justify-between">
+                <span className="text-muted-foreground">Telefone</span>
+                <span className="font-medium">
+                  {user?.telefone || "Não fornecido"}
+                </span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">Função</span>
                 <span className="font-medium capitalize">
                   {user?.role || "usuário"}
