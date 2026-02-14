@@ -59,10 +59,11 @@ export default function Contact() {
                     <Phone className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">
-                      Telefone Corretor de Imóveis
-                    </h3>
-                    <p className="text-muted-foreground">+55 (16) 99963-7161</p>
+                    <h3 className="font-semibold mb-1">Telefone</h3>
+                    <p className="text-muted-foreground">
+                      Corretor de Imóveis
+                      <br /> +55 (16) 99963-7161
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -73,11 +74,12 @@ export default function Contact() {
                     <Mail className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">
-                      Email Corretor de Imóveis
-                    </h3>
+                    <h4 className="font-semibold mb-1">Corretor de Imóveis</h4>
                     <p className="text-muted-foreground">
-                      Daniel Polo - danipolo.uk@gmail.com
+                      Daniel Polo <br />
+                      danipolo.uk@gmail.com
+                      <br />
+                      +55 (16) 99963-7161
                     </p>
                   </div>
                 </div>
@@ -89,13 +91,14 @@ export default function Contact() {
                     <MapPin className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">
-                      Dev Aplicação e Comercial
-                    </h3>
+                    <h4 className="font-semibold mb-1">
+                      App Developer e Comercial
+                    </h4>
                     <p className="text-muted-foreground">
                       Jose Paulo Archetti Conrado
                       <br />
-                      ppconrado@yahoo.com.br - +55(16) 98198-2636
+                      ppconrado@yahoo.com.br <br />
+                      +55(16) 98198-2636
                     </p>
                   </div>
                 </div>

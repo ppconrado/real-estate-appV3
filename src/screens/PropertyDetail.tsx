@@ -368,18 +368,18 @@ export default function PropertyDetail() {
                     <div className="space-y-2 text-sm">
                       <p className="text-muted-foreground">
                         <span className="font-medium text-foreground">
-                          John Smith
+                          Daniel Polo
                         </span>
                         <br />
-                        Corretor de Imóveis
+                        Corretor de Imóveis - CRECISP 274989
                       </p>
                       <p className="text-muted-foreground">
                         <Phone className="w-4 h-4 inline mr-2" />
-                        (555) 123-4567
+                        +55 (16) 99963-7161
                       </p>
                       <p className="text-muted-foreground">
                         <Mail className="w-4 h-4 inline mr-2" />
-                        john@saborrifaina.com
+                        danipolo.uk@gmail.com
                       </p>
                     </div>
                   </div>
