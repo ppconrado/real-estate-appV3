@@ -14,6 +14,7 @@ export const metadata = {
   keywords: ["Rifaina", "imóveis", "turismo", "casas", "apartamentos"],
   authors: [{ name: "Sabor Rifaina" }],
   robots: "index, follow",
+  metadataBase: new URL("https://saborrifaina.vercel.app"),
   openGraph: {
     title: "Sabor Rifaina - Imóveis e Turismo",
     description: "Descubra imóveis e experiências em Rifaina/SP.",
