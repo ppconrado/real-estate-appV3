@@ -1,5 +1,106 @@
 # Real Estate App (v3)
 
+---
+
+## Project Snapshot: February 2026
+
+This section provides a technical snapshot of the project at the start of migration to a modern-e-commerce-inspired architecture. Use this as a reference for understanding the current structure, stack, and key features before beginning the conversion.
+
+### Overview
+
+- **Project Name:** Real Estate App V3
+- **Purpose:** Real estate listing and management platform
+- **Framework:** Next.js (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS, PostCSS
+- **ORM:** Prisma
+- **Database:** (Configured via Prisma, details in .env)
+- **Authentication:** Custom (with Google OAuth), NextAuth planned
+- **State Management:** React Context, some custom hooks
+- **Deployment:** Vercel (with .env and dashboard variables)
+
+### Directory Structure (Key Folders & Files)
+
+```
+components.json
+middleware.ts
+next.config.ts
+package.json
+prisma/
+	schema.prisma
+	seed.ts
+public/
+src/
+	_core/
+		hooks/
+	app/
+		globals.css
+		layout.tsx
+		not-found.tsx
+		page.tsx
+		providers.tsx
+		[[...slug]]/
+		about/
+		admin/
+		api/
+		comparison/
+		components/
+		contact/
+		favorites/
+		logout/
+		profile/
+		properties/
+		property/
+	components/
+		(UI and admin components)
+	contexts/
+	hooks/
+	lib/
+		cloudinary.ts
+		format.ts
+		prisma.ts
+		trpc.ts
+		utils.ts
+	screens/
+		(Page-level components)
+	server/
+		(Email, env, storage, etc.)
+	shared/
+		amenities.ts
+		const.ts
+	types/
+		global.d.ts
+```
+
+### Key Features (Current State)
+
+- Property listing, detail, and comparison pages
+- Admin dashboard (basic CRUD, import, viewings, contacts)
+- Google OAuth login (working locally and on Vercel)
+- Prisma ORM for DB access
+- Some server-side logic in API routes
+- Custom hooks and context for state management
+- No advanced caching or Suspense/streaming SSR yet
+- No TanStack Query or in-memory/Redis cache
+
+### Known Issues / Migration Motivations
+
+- Pages with DB content load slower than desired
+- No unified caching strategy
+- Client-heavy data fetching in some areas
+- Lacks React Suspense and streaming SSR
+- Code structure differs from modern-e-commerce best practices
+
+### Migration Goals
+
+- Adopt Next.js Server Components for DB-backed pages
+- Implement in-memory/Redis caching for expensive queries
+- Use TanStack Query for client-side data fetching/caching
+- Enable React Suspense and streaming SSR
+- Refactor code structure to match modern-e-commerce patterns
+
+---
+
 ## Overview
 
 Real Estate App is a Next.js + TypeScript application for browsing property listings and managing them through an admin dashboard. It includes public pages, authenticated admin tooling, a Postgres database via Prisma, and image storage integration.
